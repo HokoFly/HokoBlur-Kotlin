@@ -2,6 +2,7 @@ package com.hoko.hokoblur_kotlindemo
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.hoko.ktblur.opengl.util.Size
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -9,6 +10,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val a: Size = Size(3, 5)
+        val b: Size = Size(3, 5)
+        println(a === b)
+        println(a == b)
+        println(a)
+        println(a.hashCode())
 
         // Example of a call to a native method
 //        sample_text.text = stringFromJNI()
@@ -25,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         // Used to load the 'native-lib' library on application startup.
         init {
-            System.loadLibrary("hoko_blur")
+//            System.loadLibrary("hoko_blur")
         }
     }
 }
