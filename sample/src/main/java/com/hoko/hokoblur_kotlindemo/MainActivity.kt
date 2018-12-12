@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         println(a == b)
         println(a)
         println(a.hashCode())
+        println(b.hashCode())
 
         // Example of a call to a native method
 //        sample_text.text = stringFromJNI()
