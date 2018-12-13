@@ -1,9 +1,11 @@
 package com.hoko.hokoblur_kotlindemo
 
-import android.support.v7.app.AppCompatActivity
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import com.hoko.ktblur.opengl.util.Size
-import kotlinx.android.synthetic.main.activity_main.*
+import android.support.v7.app.AppCompatActivity
+import android.widget.ImageView
+import com.hoko.ktblur.HokoBlur
+import com.hoko.ktblur.params.Mode
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,13 +13,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val a: Size = Size(3, 5)
-        val b: Size = Size(3, 5)
-        println(a === b)
-        println(a == b)
-        println(a)
-        println(a.hashCode())
-        println(b.hashCode())
+        val imageView = findViewById<ImageView>(R.id.image)
+
+        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.sample1)
+
+        imageView.setImageBitmap(HokoBlur.with(this).mode(Mode.STACK).blur(bitmap))
+
 
         // Example of a call to a native method
 //        sample_text.text = stringFromJNI()

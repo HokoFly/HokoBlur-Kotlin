@@ -6,9 +6,8 @@ import com.hoko.ktblur.util.MathUtil.Companion.clamp
 internal class BoxBlurFilter {
 
     companion object {
-        @ExperimentalUnsignedTypes
-        fun doBlur(data: UIntArray, width: Int, height: Int, radius: Int, direction: Direction) {
-            val result = UIntArray(width * height)
+        fun doBlur(data: IntArray, width: Int, height: Int, radius: Int, direction: Direction) {
+            val result = IntArray(width * height)
 
             when (direction) {
                 Direction.HORIZONTAL -> {
@@ -26,35 +25,34 @@ internal class BoxBlurFilter {
             }
         }
 
-        @ExperimentalUnsignedTypes
-        private fun blurHorizontal(input: UIntArray, output: UIntArray, width: Int, height: Int, radius: Int) {
+        private fun blurHorizontal(input: IntArray, output: IntArray, width: Int, height: Int, radius: Int) {
             val widthMinus1 = width - 1
             val tableSize = 2 * radius + 1
             // construct a query table from 0 to 255
-            val divide = UIntArray(256 * tableSize) { i ->
-                (i / tableSize).toUInt()
+            val divide = IntArray(256 * tableSize) { i ->
+                (i / tableSize)
             }
 
             var inIndex = 0
 
             //
             for (y in 0 until height) {
-                var ta: UInt= 0u
-                var tr: UInt= 0u
-                var tg: UInt= 0u
-                var tb: UInt= 0u // ARGB
+                var ta = 0
+                var tr = 0
+                var tg = 0
+                var tb = 0 // ARGB
 
                 for (i in -radius..radius) {
                     val rgb = input[inIndex + clamp(i, 0, width - 1)]
-                    ta += rgb shr 24 and 0xffu
-                    tr += rgb shr 16 and 0xffu
-                    tg += rgb shr 8 and 0xffu
-                    tb += rgb and 0xffu
+                    ta += rgb shr 24 and 0xff
+                    tr += rgb shr 16 and 0xff
+                    tg += rgb shr 8 and 0xff
+                    tb += rgb and 0xff
                 }
 
                 val baseIndex = y * width
                 for (x in 0 until width) { // Sliding window computation.
-                    output[baseIndex + x] = divide[ta.toInt()] shl 24 or (divide[tr.toInt()] shl 16) or (divide[tg.toInt()] shl 8) or divide[tb.toInt()]
+                    output[baseIndex + x] = divide[ta] shl 24 or (divide[tr] shl 16) or (divide[tg] shl 8) or divide[tb]
 
                     var i1 = x + radius + 1
                     if (i1 > widthMinus1)
@@ -65,42 +63,41 @@ internal class BoxBlurFilter {
                     val rgb1 = input[inIndex + i1]
                     val rgb2 = input[inIndex + i2]
 
-                    ta += (rgb1 shr 24 and 0xffu) - (rgb2 shr 24 and 0xffu)
-                    tr += (rgb1 and 0xff0000u) - (rgb2 and 0xff0000u) shr 16
-                    tg += (rgb1 and 0xff00u) - (rgb2 and 0xff00u) shr 8
-                    tb += (rgb1 and 0xffu) - (rgb2 and 0xffu)
+                    ta += (rgb1 shr 24 and 0xff) - (rgb2 shr 24 and 0xff)
+                    tr += (rgb1 and 0xff0000) - (rgb2 and 0xff0000) shr 16
+                    tg += (rgb1 and 0xff00) - (rgb2 and 0xff00) shr 8
+                    tb += (rgb1 and 0xff) - (rgb2 and 0xff)
                     //                outIndex += height;
                 }
                 inIndex += width
             }
         }
 
-        @ExperimentalUnsignedTypes
-        private fun blurVertical(input: UIntArray, output: UIntArray, width: Int, height: Int, radius: Int) {
+        private fun blurVertical(input: IntArray, output: IntArray, width: Int, height: Int, radius: Int) {
             val heightMinus1 = height - 1
             val tableSize = 2 * radius + 1
 
             // construct a query table from 0 to 255
-            val divide = UIntArray(256 * tableSize) { i ->
-                (i / tableSize).toUInt()
+            val divide = IntArray(256 * tableSize) { i ->
+                (i / tableSize)
             }
 
             for (x in 0 until width) {
-                var ta: UInt = 0u
-                var tr: UInt = 0u
-                var tg: UInt = 0u
-                var tb: UInt = 0u // ARGB
+                var ta = 0
+                var tr = 0
+                var tg = 0
+                var tb = 0 // ARGB
 
                 for (i in -radius..radius) {
                     val rgb = input[x + clamp(i, 0, height - 1) * width]
-                    ta += rgb shr 24 and 0xffu
-                    tr += rgb shr 16 and 0xffu
-                    tg += rgb shr 8 and 0xffu
-                    tb += rgb and 0xffu
+                    ta += rgb shr 24 and 0xff
+                    tr += rgb shr 16 and 0xff
+                    tg += rgb shr 8 and 0xff
+                    tb += rgb and 0xff
                 }
 
                 for (y in 0 until height) { // Sliding window computation
-                    output[y * width + x] = divide[ta.toInt()] shl 24 or (divide[tr.toInt()] shl 16) or (divide[tg.toInt()] shl 8) or divide[tb.toInt()]
+                    output[y * width + x] = divide[ta] shl 24 or (divide[tr] shl 16) or (divide[tg] shl 8) or divide[tb]
 
                     var i1 = y + radius + 1
                     if (i1 > heightMinus1)
@@ -111,10 +108,10 @@ internal class BoxBlurFilter {
                     val rgb1 = input[x + i1 * width]
                     val rgb2 = input[x + i2 * width]
 
-                    ta += (rgb1 shr 24 and 0xffu) - (rgb2 shr 24 and 0xffu)
-                    tr += (rgb1 and 0xff0000u) - (rgb2 and 0xff0000u) shr 16
-                    tg += (rgb1 and 0xff00u) - (rgb2 and 0xff00u) shr 8
-                    tb += (rgb1 and 0xffu) - (rgb2 and 0xffu)
+                    ta += (rgb1 shr 24 and 0xff) - (rgb2 shr 24 and 0xff)
+                    tr += (rgb1 and 0xff0000) - (rgb2 and 0xff0000) shr 16
+                    tg += (rgb1 and 0xff00) - (rgb2 and 0xff00) shr 8
+                    tb += (rgb1 and 0xff) - (rgb2 and 0xff)
                 }
             }
         }

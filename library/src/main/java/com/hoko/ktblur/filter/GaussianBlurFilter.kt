@@ -6,10 +6,9 @@ import com.hoko.ktblur.util.MathUtil.Companion.clamp
 internal class GaussianBlurFilter {
 
     companion object {
-        @ExperimentalUnsignedTypes
-        fun doBlur(data: UIntArray, width: Int, height: Int, radius: Int, direction: Direction) {
+        fun doBlur(data: IntArray, width: Int, height: Int, radius: Int, direction: Direction) {
 
-            val result = UIntArray(width * height)
+            val result = IntArray(width * height)
             val kernel = makeKernel(radius)
 
             when (direction) {
@@ -29,10 +28,9 @@ internal class GaussianBlurFilter {
             }
         }
 
-        @ExperimentalUnsignedTypes
         private fun gaussianBlurHorizontal(
-            kernel: FloatArray, inPixels: UIntArray,
-            outPixels: UIntArray, width: Int, height: Int
+            kernel: FloatArray, inPixels: IntArray,
+            outPixels: IntArray, width: Int, height: Int
         ) {
             val cols = kernel.size
             val cols2 = cols / 2
@@ -54,25 +52,24 @@ internal class GaussianBlurFilter {
                                 ix = width - 1
                             }
                             val rgb = inPixels[ioffset + ix]
-                            r += f * (rgb shr 16 and 0xffu).toLong().toFloat()
-                            g += f * (rgb shr 8 and 0xffu).toLong().toFloat()
-                            b += f * (rgb and 0xffu).toLong().toFloat()
+                            r += f * (rgb shr 16 and 0xff).toLong().toFloat()
+                            g += f * (rgb shr 8 and 0xff).toLong().toFloat()
+                            b += f * (rgb and 0xff).toLong().toFloat()
                         }
                     }
                     val outIndex = ioffset + x
-                    val ia = inPixels[outIndex] shr 24 and 0xffu
-                    val ir = clamp((r + 0.5).toInt(), 0, 255).toUInt()
-                    val ig = clamp((g + 0.5).toInt(), 0, 255).toUInt()
-                    val ib = clamp((b + 0.5).toInt(), 0, 255).toUInt()
+                    val ia = inPixels[outIndex] shr 24 and 0xff
+                    val ir = clamp((r + 0.5).toInt(), 0, 255)
+                    val ig = clamp((g + 0.5).toInt(), 0, 255)
+                    val ib = clamp((b + 0.5).toInt(), 0, 255)
                     outPixels[outIndex] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
                 }
             }
         }
 
-        @ExperimentalUnsignedTypes
         private fun gaussianBlurVertical(
-            kernel: FloatArray, inPixels: UIntArray,
-            outPixels: UIntArray, width: Int, height: Int
+            kernel: FloatArray, inPixels: IntArray,
+            outPixels: IntArray, width: Int, height: Int
         ) {
             val cols = kernel.size
             val cols2 = cols / 2
@@ -92,16 +89,16 @@ internal class GaussianBlurFilter {
                                 iy = height - 1
                             }
                             val rgb = inPixels[x + iy * width]
-                            r += f * (rgb shr 16 and 0xffu).toLong().toFloat()
-                            g += f * (rgb shr 8 and 0xffu).toLong().toFloat()
-                            b += f * (rgb and 0xffu).toLong().toFloat()
+                            r += f * (rgb shr 16 and 0xff).toLong().toFloat()
+                            g += f * (rgb shr 8 and 0xff).toLong().toFloat()
+                            b += f * (rgb and 0xff).toLong().toFloat()
                         }
                     }
                     val outIndex = x + y * width
-                    val ia = inPixels[outIndex] shr 24 and 0xffu
-                    val ir = clamp((r + 0.5).toInt(), 0, 255).toUInt()
-                    val ig = clamp((g + 0.5).toInt(), 0, 255).toUInt()
-                    val ib = clamp((b + 0.5).toInt(), 0, 255).toUInt()
+                    val ia = inPixels[outIndex] shr 24 and 0xff
+                    val ir = clamp((r + 0.5).toInt(), 0, 255)
+                    val ig = clamp((g + 0.5).toInt(), 0, 255)
+                    val ib = clamp((b + 0.5).toInt(), 0, 255)
                     outPixels[outIndex] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
                 }
             }

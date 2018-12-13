@@ -4,8 +4,7 @@ import com.hoko.ktblur.params.Direction
 
 internal class StackBlurFilter {
     companion object {
-        @ExperimentalUnsignedTypes
-        fun doBlur(pix: UIntArray, w: Int, h: Int, radius: Int, direction: Direction) {
+        fun doBlur(pix: IntArray, w: Int, h: Int, radius: Int, direction: Direction) {
 
             when (direction) {
                 Direction.HORIZONTAL -> blurHorizontal(pix, w, h, radius)
@@ -18,23 +17,22 @@ internal class StackBlurFilter {
 
         }
 
-        @ExperimentalUnsignedTypes
-        private fun blurHorizontal(pix: UIntArray, w: Int, h: Int, radius: Int) {
+        private fun blurHorizontal(pix: IntArray, w: Int, h: Int, radius: Int) {
             val wm = w - 1
             val hm = h - 1
             val wh = w * h
             val div = radius + radius + 1
 
-            val r = UIntArray(wh)
-            val g = UIntArray(wh)
-            val b = UIntArray(wh)
-            var rsum: UInt
-            var gsum: UInt
-            var bsum: UInt
+            val r = IntArray(wh)
+            val g = IntArray(wh)
+            val b = IntArray(wh)
+            var rsum: Int
+            var gsum: Int
+            var bsum: Int
             var x: Int
             var y: Int
             var i: Int
-            var p: UInt
+            var p: Int
             val yp: Int
             var yi: Int
             var yw: Int
@@ -42,30 +40,30 @@ internal class StackBlurFilter {
 
             var divsum = div + 1 shr 1
             divsum *= divsum
-            val dv = UIntArray(256 * divsum) { index ->
-                (index / divsum).toUInt()
+            val dv = IntArray(256 * divsum) { index ->
+                (index / divsum)
             }
 
             yi = 0
             yw = yi
 
-            val stack = Array(div) { UIntArray(3) }
+            val stack = Array(div) { IntArray(3) }
             var stackpointer: Int
             var stackstart: Int
-            var sir: UIntArray
-            var rbs: UInt
+            var sir: IntArray
+            var rbs: Int
             val r1 = radius + 1
-            var routsum: UInt
-            var goutsum: UInt
-            var boutsum: UInt
-            var rinsum: UInt
-            var ginsum: UInt
-            var binsum: UInt
+            var routsum: Int
+            var goutsum: Int
+            var boutsum: Int
+            var rinsum: Int
+            var ginsum: Int
+            var binsum: Int
 
 
             y = 0
             while (y < h) {
-                bsum = 0u
+                bsum = 0
                 gsum = bsum
                 rsum = gsum
                 boutsum = rsum
@@ -78,10 +76,10 @@ internal class StackBlurFilter {
                 while (i <= radius) {
                     p = pix[yi + Math.min(wm, Math.max(i, 0))]
                     sir = stack[i + radius]
-                    sir[0] = p and 0xff0000u shr 16
-                    sir[1] = p and 0x00ff00u shr 8
-                    sir[2] = p and 0x0000ffu
-                    rbs = (r1 - Math.abs(i)).toUInt()
+                    sir[0] = p and 0xff0000 shr 16
+                    sir[1] = p and 0x00ff00 shr 8
+                    sir[2] = p and 0x0000ff
+                    rbs = r1 - Math.abs(i)
                     rsum += sir[0] * rbs
                     gsum += sir[1] * rbs
                     bsum += sir[2] * rbs
@@ -101,12 +99,11 @@ internal class StackBlurFilter {
                 x = 0
                 while (x < w) {
 
-                    r[yi] = dv[rsum.toInt()]
-                    g[yi] = dv[gsum.toInt()]
-                    b[yi] = dv[bsum.toInt()]
+                    r[yi] = dv[rsum]
+                    g[yi] = dv[gsum]
+                    b[yi] = dv[bsum]
 
-                    pix[yi] = (0xff000000u and pix[yi]) or (dv[rsum.toInt()] shl 16) or (dv[gsum.toInt()] shl 8) or
-                            dv[bsum.toInt()]
+                    pix[yi] = -0x1000000 and pix[yi] or (dv[rsum] shl 16) or (dv[gsum] shl 8) or dv[bsum]
 
                     rsum -= routsum
                     gsum -= goutsum
@@ -124,9 +121,9 @@ internal class StackBlurFilter {
                     }
                     p = pix[yw + vmin[x]]
 
-                    sir[0] = p and 0xff0000u shr 16
-                    sir[1] = p and 0x00ff00u shr 8
-                    sir[2] = p and 0x0000ffu
+                    sir[0] = p and 0xff0000 shr 16
+                    sir[1] = p and 0x00ff00 shr 8
+                    sir[2] = p and 0x0000ff
 
                     rinsum += sir[0]
                     ginsum += sir[1]
@@ -155,19 +152,18 @@ internal class StackBlurFilter {
             }
         }
 
-        @ExperimentalUnsignedTypes
-        private fun blurVertical(pix: UIntArray, w: Int, h: Int, radius: Int) {
+        private fun blurVertical(pix: IntArray, w: Int, h: Int, radius: Int) {
             val wm = w - 1
             val hm = h - 1
             val wh = w * h
             val div = radius + radius + 1
 
-            val r = UIntArray(wh)
-            val g = UIntArray(wh)
-            val b = UIntArray(wh)
-            var rsum: UInt
-            var gsum: UInt
-            var bsum: UInt
+            val r = IntArray(wh)
+            val g = IntArray(wh)
+            val b = IntArray(wh)
+            var rsum: Int
+            var gsum: Int
+            var bsum: Int
             var x: Int
             var y: Int
             var i: Int
@@ -179,38 +175,38 @@ internal class StackBlurFilter {
 
             var divsum = div + 1 shr 1
             divsum *= divsum
-            val dv = UIntArray(256 * divsum) { index ->
-                (index / divsum).toUInt()
+            val dv = IntArray(256 * divsum) { index ->
+                (index / divsum)
             }
 
             yi = 0
             yw = yi
 
-            val stack = Array(div) { UIntArray(3) }
+            val stack = Array(div) { IntArray(3) }
             var stackpointer: Int
             var stackstart: Int
-            var sir: UIntArray
-            var rbs: UInt
+            var sir: IntArray
+            var rbs: Int
             val r1 = radius + 1
-            var routsum: UInt
-            var goutsum: UInt
-            var boutsum: UInt
-            var rinsum: UInt
-            var ginsum: UInt
-            var binsum: UInt
+            var routsum: Int
+            var goutsum: Int
+            var boutsum: Int
+            var rinsum: Int
+            var ginsum: Int
+            var binsum: Int
 
             i = 0
             while (i < wh) {
 
-                r[i] = pix[i] and 0xff0000u shr 16
-                g[i] = pix[i] and 0x00ff00u shr 8
-                b[i] = pix[i] and 0x0000ffu
+                r[i] = pix[i] and 0xff0000 shr 16
+                g[i] = pix[i] and 0x00ff00 shr 8
+                b[i] = pix[i] and 0x0000ff
                 i++
             }
 
             x = 0
             while (x < w) {
-                bsum = 0u
+                bsum = 0
                 gsum = bsum
                 rsum = gsum
                 boutsum = rsum
@@ -230,7 +226,7 @@ internal class StackBlurFilter {
                     sir[1] = g[yi]
                     sir[2] = b[yi]
 
-                    rbs = (r1 - Math.abs(i)).toUInt()
+                    rbs = r1 - Math.abs(i)
 
                     rsum += r[yi] * rbs
                     gsum += g[yi] * rbs
@@ -256,8 +252,8 @@ internal class StackBlurFilter {
                 y = 0
                 while (y < h) {
                     // Preserve alpha channel: ( 0xff000000 & pix[yi] )
-                    pix[yi] = (0xff000000u and pix[yi]) or (dv[rsum.toInt()] shl 16) or (dv[gsum.toInt()] shl 8) or
-                            dv[bsum.toInt()]
+                    pix[yi] = -0x1000000 and pix[yi] or (dv[rsum] shl 16) or (dv[gsum] shl 8) or dv[bsum]
+
 
                     rsum -= routsum
                     gsum -= goutsum
