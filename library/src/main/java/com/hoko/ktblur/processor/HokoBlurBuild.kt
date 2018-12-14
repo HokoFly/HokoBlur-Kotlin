@@ -64,7 +64,7 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
     }
 
     override fun processor(): BlurProcessor {
-        return OriginBlurProcessor(this)
+        return BlurProcessorFactory.getBlurProcessor(scheme, this)
     }
 
     override fun blur(bitmap: Bitmap): Bitmap {

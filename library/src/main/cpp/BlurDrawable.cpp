@@ -113,8 +113,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
 
     // find functor class
-    functorCls = env->FindClass("com/hoko/blur/opengl/functor/DrawFunctor");
-    glInfoCls = env->FindClass("com/hoko/blur/opengl/functor/DrawFunctor$GLInfo");
+    functorCls = env->FindClass("com/hoko/ktblur/opengl/functor/DrawFunctor");
+    glInfoCls = env->FindClass("com/hoko/ktblur/opengl/functor/DrawFunctor$GLInfo");
 
     if (functorCls == NULL || glInfoCls == NULL) {
         return JNI_ERR;

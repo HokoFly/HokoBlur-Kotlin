@@ -4,64 +4,6 @@
 
 #include "include/BoxBlurFilter.h"
 
-JNIEXPORT void JNICALL
-Java_com_hoko_blur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jclass type,
-                                                         jobject jbitmap, jint j_radius,
-                                                         jint j_cores, jint j_index,
-                                                         jint j_direction) {
-
-
-    if (jbitmap == NULL) {
-        return;
-    }
-
-    AndroidBitmapInfo bmpInfo = {0};
-    if (AndroidBitmap_getInfo(env, jbitmap, &bmpInfo) < 0) {
-        return;
-    }
-
-    int *pixels = NULL;
-    if (AndroidBitmap_lockPixels(env, jbitmap, (void **) &pixels) < 0) {
-        return;
-    }
-
-    int w = bmpInfo.width;
-    int h = bmpInfo.height;
-
-    jint *copy = NULL;
-    copy = (jint *) malloc(sizeof(jint) * w * h);
-
-    for (int i = 0; i < w * h; i++) {
-        copy[i] = pixels[i];
-    }
-
-    if (j_direction == HORIZONTAL) {
-        int deltaY = h / j_cores;
-        int startY = j_index * deltaY;
-
-        if (j_index == j_cores - 1) {
-            deltaY = h - (j_cores - 1) * deltaY;
-        }
-
-        boxBlurHorizontal(copy, pixels, w, h, j_radius, 0, startY, w, deltaY);
-
-    } else if (j_direction == VERTICAL) {
-        int deltaX = w / j_cores;
-        int startX = j_index * deltaX;
-
-        if (j_index == j_cores - 1) {
-            deltaX = w - (j_cores - 1) * (w / j_cores);
-        }
-
-        boxBlurVertical(copy, pixels, w, h, j_radius, startX, 0, deltaX, h);
-    }
-
-    AndroidBitmap_unlockPixels(env, jbitmap);
-
-    free(copy);
-
-}
-
 void boxBlurHorizontal(jint *in, jint *out, jint width, jint height, jint radius, jint startX,
                        jint startY, jint deltaX, jint deltaY) {
     jint widthMinus1 = width - 1;
@@ -148,4 +90,62 @@ boxBlurVertical(jint *in, jint *out, jint width, jint height, jint radius, jint 
             tb += (rgb1 & 0xff) - (rgb2 & 0xff);
         }
     }
+}
+
+JNIEXPORT void JNICALL
+Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jobject instance,
+                                                         jobject jbitmap, jint j_radius,
+                                                         jint j_cores, jint j_index,
+                                                         jint j_direction) {
+
+
+    if (jbitmap == NULL) {
+        return;
+    }
+
+    AndroidBitmapInfo bmpInfo = {0};
+    if (AndroidBitmap_getInfo(env, jbitmap, &bmpInfo) < 0) {
+        return;
+    }
+
+    int *pixels = NULL;
+    if (AndroidBitmap_lockPixels(env, jbitmap, (void **) &pixels) < 0) {
+        return;
+    }
+
+    int w = bmpInfo.width;
+    int h = bmpInfo.height;
+
+    jint *copy = NULL;
+    copy = (jint *) malloc(sizeof(jint) * w * h);
+
+    for (int i = 0; i < w * h; i++) {
+        copy[i] = pixels[i];
+    }
+
+    if (j_direction == HORIZONTAL) {
+        int deltaY = h / j_cores;
+        int startY = j_index * deltaY;
+
+        if (j_index == j_cores - 1) {
+            deltaY = h - (j_cores - 1) * deltaY;
+        }
+
+        boxBlurHorizontal(copy, pixels, w, h, j_radius, 0, startY, w, deltaY);
+
+    } else if (j_direction == VERTICAL) {
+        int deltaX = w / j_cores;
+        int startX = j_index * deltaX;
+
+        if (j_index == j_cores - 1) {
+            deltaX = w - (j_cores - 1) * (w / j_cores);
+        }
+
+        boxBlurVertical(copy, pixels, w, h, j_radius, startX, 0, deltaX, h);
+    }
+
+    AndroidBitmap_unlockPixels(env, jbitmap);
+
+    free(copy);
+
 }

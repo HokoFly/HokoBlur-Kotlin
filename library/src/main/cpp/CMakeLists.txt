@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(hoko_blur)
+project(hoko_ktblur)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -11,7 +11,7 @@ add_compile_options(-fPIC)
 
 aux_source_directory(. SOURCE_FILES)
 
-set(BLUR_LIB_NAME hoko_blur)
+set(BLUR_LIB_NAME hoko_ktblur)
 
 add_library(${BLUR_LIB_NAME} SHARED ${SOURCE_FILES})
 
