@@ -24,6 +24,7 @@ object NativeBlurFilter {
     private external fun nativeGaussianBlur(bitmap: Bitmap, radius: Int, cores: Int, index: Int, direction: Int)
 
     init {
+        //todo try-catch
         System.loadLibrary("hoko_ktblur")
     }
 

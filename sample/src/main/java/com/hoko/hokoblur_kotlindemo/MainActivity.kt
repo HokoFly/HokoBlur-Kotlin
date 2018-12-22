@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import com.hoko.ktblur.HokoBlur
 import com.hoko.ktblur.params.Mode
+import com.hoko.ktblur.params.Scheme
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.sample1)
 
-        imageView.setImageBitmap(HokoBlur.with(this).mode(Mode.STACK).blur(bitmap))
+        imageView.setImageBitmap(HokoBlur.with(this).scheme(Scheme.OPENGL).mode(Mode.STACK).blur(bitmap))
 
 
         // Example of a call to a native method

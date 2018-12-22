@@ -6,10 +6,6 @@ import com.hoko.ktblur.api.Texture
 abstract class AbstractTexture(val width: Int, val height: Int) : Texture {
     private var textureId: Int = 0
 
-    init {
-        this.create()
-    }
-
     override fun create() {
         val textureIds = IntArray(1)
 

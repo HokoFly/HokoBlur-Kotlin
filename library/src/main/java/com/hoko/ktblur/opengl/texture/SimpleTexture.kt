@@ -5,6 +5,10 @@ import java.nio.Buffer
 
 class SimpleTexture(width: Int, height: Int) : AbstractTexture(width, height) {
 
+    init {
+        create()
+    }
+
 
     override fun onTextureCreated() {
         check(width() > 0 && height() > 0)

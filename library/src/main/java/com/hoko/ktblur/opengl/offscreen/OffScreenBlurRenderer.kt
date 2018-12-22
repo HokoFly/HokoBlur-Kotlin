@@ -18,11 +18,12 @@ import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
-class OffScreenBlurRender : Render<Bitmap> {
+class OffScreenBlurRenderer : Render<Bitmap> {
 
     companion object {
-        private val TAG = OffScreenBlurRender::class.java.simpleName
-
+        private val TAG = OffScreenBlurRenderer::class.java.simpleName
+        private const val COORDS_PER_VERTEX = 3
+        private const val VERTEX_STRIDE = COORDS_PER_VERTEX * 4
     }
 
     //todo 使用原始字符串
@@ -34,8 +35,6 @@ class OffScreenBlurRender : Render<Bitmap> {
             "  vTexCoord = aTexCoord; \n" +
             "}  \n"
 
-    private val COORDS_PER_VERTEX = 3
-    private val VERTEX_STRIDE = COORDS_PER_VERTEX * 4
 
     private val squareCoords = floatArrayOf(
         -1f, 1f, 0.0f, // top left
@@ -146,9 +145,6 @@ class OffScreenBlurRender : Render<Bitmap> {
                 VERTEX_STRIDE,
                 vertexBuffer
             )
-
-            //        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-            //        GLES20.glUniform4fv(mColorHandle, 1, fragmentColor, 0);
 
             val texCoordId = GLES20.glGetAttribLocation(p.id(), "aTexCoord")
             GLES20.glEnableVertexAttribArray(texCoordId)

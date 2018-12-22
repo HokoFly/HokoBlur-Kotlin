@@ -1,15 +1,23 @@
 package com.hoko.ktblur.processor
 
 import android.graphics.Bitmap
+import com.hoko.ktblur.opengl.offscreen.EglBuffer
 
 class OpenGLBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
 
-//    private val
+    private val eglBuffer: EglBuffer = EglBuffer()
 
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
 
-        return bitmap
+        check(!bitmap.isRecycled)
+        eglBuffer.setBlurMode(mode)
+        eglBuffer.setBlurRadius(radius)
+        return eglBuffer.getBlurBitmap(bitmap)
 
+    }
+
+    protected fun finalize() {
+        eglBuffer.free()
     }
 
 }

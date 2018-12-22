@@ -9,6 +9,10 @@ class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.heigh
 
     private val bitmapWeakRef = WeakReference<Bitmap>(bitmap)
 
+    init {
+        create()
+    }
+
     override fun onTextureCreated() {
         check(width() > 0 && height() > 0)
 
