@@ -7,7 +7,7 @@ class BlurProcessorFactory {
     companion object {
         fun getBlurProcessor(scheme: Scheme, builder: HokoBlurBuild): BlurProcessor {
             return when(scheme) {
-                Scheme.RENDERSCRIPT -> OriginBlurProcessor(builder)
+                Scheme.RENDERSCRIPT -> RenderScriptBlurProcessor(builder)
                 Scheme.OPENGL -> OpenGLBlurProcessor(builder)
                 Scheme.NATIVE -> NativeBlurProcessor(builder)
                 Scheme.KOTLIN -> OriginBlurProcessor(builder)
