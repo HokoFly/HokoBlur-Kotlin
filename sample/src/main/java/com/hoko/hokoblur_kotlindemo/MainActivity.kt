@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.sample1)
 
-        imageView.setImageBitmap(HokoBlur.with(this).scheme(Scheme.RENDERSCRIPT).mode(Mode.STACK).blur(bitmap))
+        imageView.setImageBitmap(HokoBlur.with(this).scheme(Scheme.OPENGL).mode(Mode.GAUSSIAN).blur(bitmap))
 
 
         // Example of a call to a native method

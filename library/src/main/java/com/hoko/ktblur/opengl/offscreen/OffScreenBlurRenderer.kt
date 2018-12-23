@@ -26,14 +26,15 @@ class OffScreenBlurRenderer : Render<Bitmap> {
         private const val VERTEX_STRIDE = COORDS_PER_VERTEX * 4
     }
 
-    //todo 使用原始字符串
-    private val vertexShaderCode = "attribute vec2 aTexCoord;   \n" +
-            "attribute vec4 aPosition;  \n" +
-            "varying vec2 vTexCoord;  \n" +
-            "void main() {              \n" +
-            "  gl_Position = aPosition; \n" +
-            "  vTexCoord = aTexCoord; \n" +
-            "}  \n"
+    private val vertexShaderCode = """
+            attribute vec2 aTexCoord;
+            attribute vec4 aPosition;
+            varying vec2 vTexCoord;
+            void main() {
+                gl_Position = aPosition;
+                vTexCoord = aTexCoord;
+            }
+    """.trimIndent()
 
 
     private val squareCoords = floatArrayOf(

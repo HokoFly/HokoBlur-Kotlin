@@ -4,7 +4,7 @@ import android.opengl.GLES20
 import com.hoko.ktblur.api.FrameBuffer
 import com.hoko.ktblur.api.Texture
 
-class SimpleFrameBuffer(var frameBufferId: Int) : FrameBuffer{
+class SimpleFrameBuffer(private var frameBufferId: Int) : FrameBuffer{
     private var texture: Texture? = null
 
     constructor() : this(0) {
