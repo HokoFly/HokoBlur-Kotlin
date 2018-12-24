@@ -53,7 +53,7 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
     private val drawOrder = shortArrayOf(0, 1, 2, 0, 2, 3)
 
-    private var mProgram: Program? = null
+    private lateinit var mProgram: Program
 
     private val vertexBuffer: FloatBuffer
     private val drawListBuffer: ShortBuffer
@@ -109,13 +109,11 @@ class OffScreenBlurRenderer : Render<Bitmap> {
             throw IllegalStateException("This thread has no EGLContext.")
         }
 
-        if (needRelink) {
+        if (needRelink || !this::mProgram.isInitialized) {
             deletePrograms()
             mProgram = ProgramFactory.create(vertexShaderCode, ShaderUtil.getFragmentShaderCode(mode))
             needRelink = false
         }
-
-        mProgram?.id() ?: throw IllegalStateException("Failed to create program.")
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glViewport(0, 0, bitmap.width, bitmap.height)
@@ -132,7 +130,7 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
     private fun drawOneDimenBlur(blurContext: BlurContext, isHorizontal: Boolean) {
         try {
-            val p = mProgram ?: return
+            val p = mProgram
 
             GLES20.glUseProgram(p.id())
 
@@ -197,7 +195,9 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
 
     private fun deletePrograms() {
-        mProgram?.delete()
+        if (this::mProgram.isInitialized) {
+            mProgram.delete()
+        }
     }
 
     fun free() {

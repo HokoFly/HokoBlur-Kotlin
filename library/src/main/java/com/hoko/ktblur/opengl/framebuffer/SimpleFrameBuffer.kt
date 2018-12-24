@@ -5,7 +5,7 @@ import com.hoko.ktblur.api.FrameBuffer
 import com.hoko.ktblur.api.Texture
 
 class SimpleFrameBuffer(private var frameBufferId: Int) : FrameBuffer{
-    private var texture: Texture? = null
+    private lateinit var texture: Texture
 
     constructor() : this(0) {
         create()
@@ -34,7 +34,7 @@ class SimpleFrameBuffer(private var frameBufferId: Int) : FrameBuffer{
 
     }
 
-    fun bindTexture(): Texture? {
+    fun bindTexture(): Texture {
         return texture
     }
 
