@@ -1,12 +1,10 @@
-package com.hoko.hokoblur_kotlindemo
+package com.hoko.ktblur.demo
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -19,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.hoko.hokoblur_kotlindemo", appContext.packageName)
+        assertEquals("com.hoko.ktblur.demo", appContext.packageName)
     }
 }

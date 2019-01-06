@@ -1,8 +1,7 @@
-package com.hoko.hokoblur_kotlindemo
+package com.hoko.ktblur.demo
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

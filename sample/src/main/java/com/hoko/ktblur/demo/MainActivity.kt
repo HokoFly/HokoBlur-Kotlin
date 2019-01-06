@@ -1,4 +1,4 @@
-package com.hoko.hokoblur_kotlindemo
+package com.hoko.ktblur.demo
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
