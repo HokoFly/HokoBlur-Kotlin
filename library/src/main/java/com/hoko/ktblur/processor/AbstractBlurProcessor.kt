@@ -8,6 +8,11 @@ import com.hoko.ktblur.ext.scale
 import com.hoko.ktblur.ext.translate
 import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.task.AsyncBlurTask
+import com.hoko.ktblur.task.BitmapAsyncBlurTask
+import com.hoko.ktblur.task.BlurTaskManager
+import com.hoko.ktblur.task.ViewAsyncBlurTask
+import java.util.concurrent.Future
 
 abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
@@ -25,7 +30,10 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
     }
 
     override fun blur(view: View): Bitmap {
-        return view.getBitmap(translateX, translateY, sampleFactor)
+        return realBlur(
+            view.getBitmap(translateX, translateY, sampleFactor),
+            true
+        ).scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
     }
 
     private fun blur(bitmap: Bitmap, parallel: Boolean): Bitmap {
@@ -45,12 +53,18 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
 
+    override fun asyncBlur(bitmap: Bitmap, callback: AsyncBlurTask.Callback): Future<*> {
+        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, callback, bitmap))
+    }
+
+    override fun asyncBlur(view: View, callback: AsyncBlurTask.Callback): Future<*> {
+        return BlurTaskManager.submit(ViewAsyncBlurTask(this, callback, view))
+    }
+
     private fun checkParams() {
         radius = if (radius <= 0) 1 else radius
         sampleFactor = if (sampleFactor < 1.0f) 1.0f else sampleFactor
     }
-
-
 
 
 }
