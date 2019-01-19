@@ -11,7 +11,7 @@ object BlurTaskManager {
     private val ASYNC_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
     private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
 
-    fun submit(task: AsyncBlurTask): Future<*> {
+    fun <T>submit(task: AsyncBlurTask<T>): Future<*> {
         return ASYNC_BLUR_EXECUTOR.submit(task)
     }
 
