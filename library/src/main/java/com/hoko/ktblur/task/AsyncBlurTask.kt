@@ -4,15 +4,13 @@ import android.graphics.Bitmap
 import android.view.View
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.BlurResultDispatcher
-import com.hoko.ktblur.task.AndroidBlurResultDispatcher.Companion.MAIN_THREAD_DISPATCHER
 
 sealed class AsyncBlurTask<in T>(
     protected val blurProcessor: BlurProcessor,
     private val callback: Callback,
-    private val target: T
+    private val target: T,
+    private val dispatcher: BlurResultDispatcher
 ) : Runnable {
-
-    private var blurResultDispatcher: BlurResultDispatcher = MAIN_THREAD_DISPATCHER
 
     abstract fun makeBlur(target: T) : Bitmap
 
@@ -31,7 +29,7 @@ sealed class AsyncBlurTask<in T>(
                 it.success = false
             }
         } finally {
-            blurResultDispatcher.dispatch(blurResult)
+            dispatcher.dispatch(BlurResultRunnable.of(blurResult))
         }
 
     }
@@ -47,8 +45,9 @@ sealed class AsyncBlurTask<in T>(
 class BitmapAsyncBlurTask(
     blurProcessor: BlurProcessor,
     callback: Callback,
-    bitmap: Bitmap
-) : AsyncBlurTask<Bitmap>(blurProcessor, callback, bitmap) {
+    bitmap: Bitmap,
+    dispatcher: BlurResultDispatcher
+) : AsyncBlurTask<Bitmap>(blurProcessor, callback, bitmap, dispatcher) {
     override fun makeBlur(target: Bitmap): Bitmap {
         return blurProcessor.blur(target)
     }
@@ -58,8 +57,9 @@ class BitmapAsyncBlurTask(
 
 class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
                          callback: AsyncBlurTask.Callback,
-                         view: View
-) : AsyncBlurTask<View>(blurProcessor, callback, view) {
+                         view: View,
+                         dispatcher: BlurResultDispatcher
+) : AsyncBlurTask<View>(blurProcessor, callback, view, dispatcher) {
 
     override fun makeBlur(target: View): Bitmap {
         return blurProcessor.blur(target)

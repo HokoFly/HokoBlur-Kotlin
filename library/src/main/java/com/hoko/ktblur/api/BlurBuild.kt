@@ -28,6 +28,8 @@ interface BlurBuild {
 
     fun translateY(translateY: Int): BlurBuild
 
+    fun dispatcher(dispatcher: BlurResultDispatcher): BlurBuild
+
     fun processor(): BlurProcessor
 
     fun blur(bitmap: Bitmap): Bitmap

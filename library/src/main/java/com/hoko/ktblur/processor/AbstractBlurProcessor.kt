@@ -3,6 +3,7 @@ package com.hoko.ktblur.processor
 import android.graphics.Bitmap
 import android.view.View
 import com.hoko.ktblur.api.BlurProcessor
+import com.hoko.ktblur.api.BlurResultDispatcher
 import com.hoko.ktblur.ext.getBitmap
 import com.hoko.ktblur.ext.scale
 import com.hoko.ktblur.ext.translate
@@ -24,6 +25,7 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
     override var needUpscale: Boolean = builder.needUpscale
     override var translateX: Int = builder.translateX
     override var translateY: Int = builder.translateY
+    override var dispatcher: BlurResultDispatcher = builder.dispatcher
 
     override fun blur(bitmap: Bitmap): Bitmap {
         return blur(bitmap, true)
@@ -54,11 +56,11 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
 
     override fun asyncBlur(bitmap: Bitmap, callback: AsyncBlurTask.Callback): Future<*> {
-        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, callback, bitmap))
+        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, callback, bitmap, dispatcher))
     }
 
     override fun asyncBlur(view: View, callback: AsyncBlurTask.Callback): Future<*> {
-        return BlurTaskManager.submit(ViewAsyncBlurTask(this, callback, view))
+        return BlurTaskManager.submit(ViewAsyncBlurTask(this, callback, view, dispatcher))
     }
 
     private fun checkParams() {

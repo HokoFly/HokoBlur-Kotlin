@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.view.View
 import com.hoko.ktblur.api.BlurBuild
 import com.hoko.ktblur.api.BlurProcessor
+import com.hoko.ktblur.api.BlurResultDispatcher
 import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.task.AndroidBlurResultDispatcher
 import com.hoko.ktblur.task.AsyncBlurTask
 import java.util.concurrent.Future
 
@@ -19,6 +21,7 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var needUpscale: Boolean = true
     internal var translateX: Int = 0
     internal var translateY: Int = 0
+    internal var dispatcher: BlurResultDispatcher = AndroidBlurResultDispatcher.MAIN_THREAD_DISPATCHER
 
     override fun context(context: Context): BlurBuild {
         this.context = context
@@ -62,6 +65,11 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
 
     override fun translateY(translateY: Int): BlurBuild {
         this.translateY = translateY
+        return this
+    }
+
+    override fun dispatcher(dispatcher: BlurResultDispatcher): BlurBuild {
+        this.dispatcher = dispatcher
         return this
     }
 

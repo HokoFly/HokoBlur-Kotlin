@@ -17,6 +17,7 @@ interface BlurProcessor {
     var needUpscale: Boolean
     var translateX: Int
     var translateY: Int
+    var dispatcher: BlurResultDispatcher
 
 
     fun blur(bitmap: Bitmap): Bitmap

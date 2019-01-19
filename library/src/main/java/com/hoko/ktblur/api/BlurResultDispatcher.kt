@@ -1,8 +1,8 @@
 package com.hoko.ktblur.api
 
-import com.hoko.ktblur.task.BlurResult
+import com.hoko.ktblur.task.BlurResultRunnable
 
 interface BlurResultDispatcher {
 
-    fun dispatch(result: BlurResult)
+    fun dispatch(runnable: BlurResultRunnable)
 }
