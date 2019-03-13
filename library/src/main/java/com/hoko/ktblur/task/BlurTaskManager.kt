@@ -1,5 +1,6 @@
 package com.hoko.ktblur.task
 
+import android.util.Log
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
@@ -11,11 +12,19 @@ object BlurTaskManager {
     private val ASYNC_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
     private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
 
+    fun getWorkersCount() : Int = EXECUTOR_THREADS_COUNT
+
     fun <T>submit(task: AsyncBlurTask<T>): Future<*> {
         return ASYNC_BLUR_EXECUTOR.submit(task)
     }
 
-
-    fun getWorkersCount() : Int = EXECUTOR_THREADS_COUNT
-
+    fun invokeAll(tasks: Collection<BlurSubTask>) {
+        if (tasks.isNotEmpty()) {
+            try {
+                PARALLEL_BLUR_EXECUTOR.invokeAll(tasks)
+            } catch (e: InterruptedException) {
+                Log.e(TAG, "invoke blur sub tasks error", e)
+            }
+        }
+    }
 }

@@ -6,7 +6,7 @@ import com.hoko.ktblur.processor.HokoBlurBuild
 
 object HokoBlur {
 
-    fun with(context: Context): BlurBuild  {
+    fun with(context: Context): BlurBuild {
         return HokoBlurBuild(context.applicationContext)
     }
 

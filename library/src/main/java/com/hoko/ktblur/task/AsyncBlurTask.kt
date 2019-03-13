@@ -51,8 +51,6 @@ class BitmapAsyncBlurTask(
     override fun makeBlur(target: Bitmap): Bitmap {
         return blurProcessor.blur(target)
     }
-
-
 }
 
 class ViewAsyncBlurTask (blurProcessor: BlurProcessor,

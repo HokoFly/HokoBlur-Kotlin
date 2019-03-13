@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         imageView.setImageBitmap(bitmap)
         imageView.post {
-            HokoBlur.with(this).scheme(Scheme.OPENGL).mode(Mode.GAUSSIAN).asyncBlur(imageView, object : AsyncBlurTask.Callback {
+            HokoBlur.with(this).scheme(Scheme.NATIVE).mode(Mode.GAUSSIAN).asyncBlur(imageView, object : AsyncBlurTask.Callback {
                 override fun onSuccess(bitmap: Bitmap?) {
                     imageView.setImageBitmap(bitmap)
                 }
