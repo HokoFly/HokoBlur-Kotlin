@@ -23,6 +23,4 @@ fun Bitmap.translate(translateX: Int, translateY: Int): Bitmap {
 
 }
 
-fun Bitmap.replaceWithPixels(pixels: IntArray, x: Int, y: Int, deltaX: Int, deltaY: Int) {
-
-}
+external fun Bitmap.replaceWithPixels(pixels: IntArray, x: Int, y: Int, deltaX: Int, deltaY: Int)

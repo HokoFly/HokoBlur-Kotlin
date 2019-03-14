@@ -16,7 +16,7 @@ jint clamp(jint i, jint minValue, jint maxValue) {
 
 
 JNIEXPORT void JNICALL
-Java_com_hoko_blur_util_BitmapUtil_replaceBitmap(JNIEnv *env, jclass type, jobject jbitmap,
+Java_com_hoko_ktblur_ext_BitmapExtensionKt_replaceWithPixels(JNIEnv *env, jclass clazz, jobject jbitmap,
                                                  jintArray j_inArray, jint j_x, jint j_y,
                                                  jint j_deltaW, jint j_deltaH) {
 
@@ -43,25 +43,14 @@ Java_com_hoko_blur_util_BitmapUtil_replaceBitmap(JNIEnv *env, jclass type, jobje
 
     for (int i = j_x; i < j_x + j_deltaW; i++) {
         for (int j = j_y; j < j_y + j_deltaH; j++) {
-            jint argb = c_inArray[i + j * h];
+            jint argb = c_inArray[i - j_x + (j - j_y) * j_deltaW];
             jint a = ((argb >> 24) & 0xff) << 24;
             jint r = (argb >> 16) & 0xff;
             jint g = ((argb >> 8) & 0xff) << 8;
             jint b = (argb & 0xff) << 16;
-            pixels[i + j * h] = a + r + g + b;
-
+            pixels[i + j * w] = a + r + g + b;
         }
     }
-//    for(int i = j_y * w; i < w * (j_y + j_deltaH); i ++) {
-//        jint argb = c_inArray[i];
-//        jint a = ((argb >> 24) & 0xff) << 24;
-//        jint r = (argb >> 16) & 0xff;
-//        jint g = ((argb >> 8) & 0xff) << 8;
-//        jint b = (argb & 0xff) << 16;
-//
-//        pixels[i] = a + r + g + b;
-//
-//    }
 //    __android_log_print(ANDROID_LOG_ERROR, "unlockPixels", "unlockPixels");
 
     AndroidBitmap_unlockPixels(env, jbitmap);

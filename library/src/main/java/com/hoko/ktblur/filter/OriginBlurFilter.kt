@@ -72,4 +72,9 @@ object OriginBlurFilter {
             bitmap.replaceWithPixels(pixels, 0, 0, w, h)
         }
     }
+
+    init {
+        //todo try-catch
+        System.loadLibrary("hoko_ktblur")
+    }
 }
