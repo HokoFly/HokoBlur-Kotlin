@@ -6,7 +6,9 @@ import android.util.Log
 class GLUtil {
     companion object {
         private val TAG = GLUtil::class.java.simpleName
-
+        /**
+         * return true if no GL Error
+         */
         fun checkGLError(msg: String): Boolean {
             val error = GLES20.glGetError()
             if (error != 0) {

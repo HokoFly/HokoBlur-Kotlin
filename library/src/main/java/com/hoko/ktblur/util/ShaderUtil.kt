@@ -1,7 +1,5 @@
 package com.hoko.ktblur.util
 
-import android.opengl.GLES20
-import android.util.Log
 import com.hoko.ktblur.params.Mode
 
 
@@ -9,8 +7,6 @@ import com.hoko.ktblur.params.Mode
  * Created by yuxfzju on 16/9/4.
  */
 object ShaderUtil {
-
-    private val TAG = ShaderUtil::class.java.simpleName
 
     val vertexCode: String = """
         uniform mat4 uMVPMatrix;
@@ -100,19 +96,6 @@ object ShaderUtil {
             gl_FragColor = vec4(mix(col.rgb, vMixColor.rgb, vMixColor.a * mixPercent), col.a);
         }
     """.trimIndent()
-
-
-    /**
-     * return true if no GL Error
-     */
-    fun checkGLError(msg: String): Boolean {
-        val error = GLES20.glGetError()
-        if (error != 0) {
-            Log.e(TAG, "checkGLError: error=$error, msg=$msg")
-        }
-
-        return error == 0
-    }
 
     fun getFragmentShaderCode(mode: Mode): String {
 

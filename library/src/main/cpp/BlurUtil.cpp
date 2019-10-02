@@ -20,7 +20,7 @@ Java_com_hoko_ktblur_ext_BitmapExtensionKt_replaceWithPixels(JNIEnv *env, jclass
                                                  jintArray j_inArray, jint j_x, jint j_y,
                                                  jint j_deltaW, jint j_deltaH) {
 
-    if (jbitmap == NULL) {
+    if (jbitmap == nullptr) {
         return;
     }
 
@@ -36,7 +36,7 @@ Java_com_hoko_ktblur_ext_BitmapExtensionKt_replaceWithPixels(JNIEnv *env, jclass
 
 
     jint *c_inArray;
-    c_inArray = env->GetIntArrayElements(j_inArray, NULL);
+    c_inArray = env->GetIntArrayElements(j_inArray, nullptr);
 
     int w = bmpInfo.width;
     int h = bmpInfo.height;

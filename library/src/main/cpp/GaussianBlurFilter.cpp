@@ -107,14 +107,14 @@ float *makeKernel(jint r) {
     return matrix;
 }
 
-void JNICALL Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeGaussianBlur(JNIEnv *env, jobject instance,
+extern "C" void JNICALL Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeGaussianBlur(JNIEnv *env, jobject instance,
                                                                            jobject jbitmap,
                                                                            jint j_radius,
                                                                            jint j_cores,
                                                                            jint j_index,
                                                                            jint j_direction) {
 
-    if (jbitmap == NULL) {
+    if (jbitmap == nullptr) {
         return;
     }
 
@@ -123,7 +123,7 @@ void JNICALL Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeGaussianBlur(JNI
         return;
     }
 
-    int *pixels = NULL;
+    int *pixels = nullptr;
     if (AndroidBitmap_lockPixels(env, jbitmap, (void **) &pixels) < 0) {
         return;
     }
@@ -131,10 +131,10 @@ void JNICALL Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeGaussianBlur(JNI
     int w = bmpInfo.width;
     int h = bmpInfo.height;
 
-    float *kernel = NULL;
+    float *kernel = nullptr;
     kernel = makeKernel(j_radius);
 
-    jint *copy = NULL;
+    jint *copy = nullptr;
     copy = (jint *) malloc(sizeof(jint) * w * h);
 
     for (int i = 0; i < w * h; i++) {

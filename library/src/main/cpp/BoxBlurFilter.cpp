@@ -92,14 +92,14 @@ boxBlurVertical(jint *in, jint *out, jint width, jint height, jint radius, jint 
     }
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jobject instance,
                                                          jobject jbitmap, jint j_radius,
                                                          jint j_cores, jint j_index,
                                                          jint j_direction) {
 
 
-    if (jbitmap == NULL) {
+    if (jbitmap == nullptr) {
         return;
     }
 
@@ -116,7 +116,7 @@ Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jobject 
     int w = bmpInfo.width;
     int h = bmpInfo.height;
 
-    jint *copy = NULL;
+    jint *copy = nullptr;
     copy = (jint *) malloc(sizeof(jint) * w * h);
 
     for (int i = 0; i < w * h; i++) {

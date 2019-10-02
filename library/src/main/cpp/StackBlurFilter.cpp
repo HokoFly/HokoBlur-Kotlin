@@ -248,13 +248,13 @@ void doVerticalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint st
     free(stack);
 }
 
-JNIEXPORT void JNICALL
+extern "C" JNIEXPORT void JNICALL
 Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeStackBlur(JNIEnv *env, jobject instance,
                                                            jobject jbitmap, jint j_radius,
                                                            jint j_cores, jint j_index,
                                                            jint j_direction) {
 
-    if (jbitmap == NULL) {
+    if (jbitmap == nullptr) {
         return;
     }
 
@@ -263,7 +263,7 @@ Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeStackBlur(JNIEnv *env, jobjec
         return;
     }
 
-    int *pixels = NULL;
+    int *pixels = nullptr;
     if (AndroidBitmap_lockPixels(env, jbitmap, (void **) &pixels) < 0) {
         return;
     }
