@@ -6,15 +6,13 @@ import java.util.concurrent.Future
 
 object BlurTaskManager {
     private val TAG: String = BlurTaskManager::class.java.simpleName
-    private val EXECUTOR_THREADS_COUNT: Int =
-        if (Runtime.getRuntime().availableProcessors() <= 3) 1 else Runtime.getRuntime().availableProcessors() / 2
+    val WORKER_THREADS_COUNT: Int
+    get() = if (Runtime.getRuntime().availableProcessors() <= 3) 1 else Runtime.getRuntime().availableProcessors() / 2
 
-    private val ASYNC_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
-    private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(EXECUTOR_THREADS_COUNT)
+    private val ASYNC_BLUR_EXECUTOR = Executors.newFixedThreadPool(WORKER_THREADS_COUNT)
+    private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(WORKER_THREADS_COUNT)
 
-    fun getWorkersCount() : Int = EXECUTOR_THREADS_COUNT
-
-    fun <T>submit(task: AsyncBlurTask<T>): Future<*> {
+    fun <T> submit(task: AsyncBlurTask<T>): Future<*> {
         return ASYNC_BLUR_EXECUTOR.submit(task)
     }
 

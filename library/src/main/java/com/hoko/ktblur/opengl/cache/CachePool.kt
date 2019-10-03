@@ -31,7 +31,6 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
         } finally {
             trimToSize(maxSize)
         }
-
     }
 
     private fun remove(key: K): V? {
@@ -66,7 +65,7 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
     private fun trimToSize(maxSize: Int) {
         val removedCollection = ArrayList<V>()
         synchronized(this) {
-            while(internalCache.size > maxSize && !internalCache.isEmpty()) {
+            while(internalCache.size > maxSize && internalCache.isNotEmpty()) {
                 val removed = internalCache.removeAt(0)
                 if (removed != null) {
                     removedCollection.add(removed)
@@ -80,7 +79,6 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
     }
 
     protected open fun entryDeleted(removed: V) {
-
 
     }
 

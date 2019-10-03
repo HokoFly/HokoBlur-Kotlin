@@ -1,7 +1,6 @@
 package com.hoko.ktblur.api
 
 interface Texture {
-
     fun create()
 
     fun delete()

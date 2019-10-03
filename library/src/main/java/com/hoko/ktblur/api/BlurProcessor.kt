@@ -8,7 +8,6 @@ import com.hoko.ktblur.task.AsyncBlurTask
 import java.util.concurrent.Future
 
 interface BlurProcessor {
-
     var radius: Int
     var mode: Mode
     var scheme: Scheme
@@ -18,7 +17,6 @@ interface BlurProcessor {
     var translateX: Int
     var translateY: Int
     var dispatcher: BlurResultDispatcher
-
 
     fun blur(bitmap: Bitmap): Bitmap
 

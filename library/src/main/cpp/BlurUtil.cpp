@@ -3,6 +3,9 @@
 //
 
 #include "include/BlurUtil.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 jint clamp(jint i, jint minValue, jint maxValue) {
     if (i < minValue) {
@@ -51,10 +54,13 @@ Java_com_hoko_ktblur_ext_BitmapExtensionKt_replaceWithPixels(JNIEnv *env, jclass
             pixels[i + j * w] = a + r + g + b;
         }
     }
-//    __android_log_print(ANDROID_LOG_ERROR, "unlockPixels", "unlockPixels");
 
     AndroidBitmap_unlockPixels(env, jbitmap);
 
     env->ReleaseIntArrayElements(j_inArray, c_inArray, 0);
 
 }
+
+#ifdef __cplusplus
+}
+#endif

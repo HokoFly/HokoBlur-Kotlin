@@ -3,6 +3,9 @@
 //
 
 #include "include/GaussianBlurFilter.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void gaussianBlurHorizontal(float *kernel, jint *inPixels, jint *outPixels, jint width, jint height,
                             jint radius,
@@ -167,3 +170,7 @@ extern "C" void JNICALL Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeGauss
     free(copy);
     free(kernel);
 }
+
+#ifdef __cplusplus
+}
+#endif

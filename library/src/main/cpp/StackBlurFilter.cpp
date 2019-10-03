@@ -3,6 +3,9 @@
 //
 
 #include "include/StackBlurFilter.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define max(a, b) ((a)>(b)?(a):(b))
 #define min(a, b) ((a)<(b)?(a):(b))
@@ -11,11 +14,9 @@ void doHorizontalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint 
                       jint deltaY) {
 
     jint wm = w - 1;
-    jint hm = h - 1;
-    jint wh = w * h;
     jint div = radius + radius + 1;
 
-    jint rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
+    jint rsum, gsum, bsum, x, y, i, p, yi;
     jint *vmin;
 
     vmin = (jint *) malloc(sizeof(jint) * max(w, h));
@@ -29,10 +30,6 @@ void doHorizontalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint 
     for (i = 0; i < 256 * divsum; i++) {
         dv[i] = (short) (i / divsum);
     }
-
-    yi = 0;
-
-    //jint stack[div][3];
 
     jint (*stack)[3];
     stack = (jint(*)[3]) malloc(sizeof(jint) * div * 3);
@@ -90,9 +87,7 @@ void doHorizontalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint 
             goutsum -= sir[1];
             boutsum -= sir[2];
 
-//            if (y == 0) {
             vmin[x] = min(x + radius + 1, wm);
-//            }
             p = pix[baseIndex + vmin[x]];
 
             sir[0] = (p & 0xff0000) >> 16;
@@ -131,13 +126,11 @@ void doHorizontalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint 
 void doVerticalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint startY, jint deltaX,
                     jint deltaY) {
 
-    jint wm = w - 1;
     jint hm = h - 1;
-    jint wh = w * h;
     jint hmw = hm * w;
     jint div = radius + radius + 1;
 
-    jint rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
+    jint rsum, gsum, bsum, x, y, i, p, yi;
     jint *vmin;
 
     vmin = (jint *) malloc(sizeof(jint) * max(w, h));
@@ -151,10 +144,6 @@ void doVerticalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint st
     for (i = 0; i < 256 * divsum; i++) {
         dv[i] = (short) (i / divsum);
     }
-
-    yi = 0;
-
-    //jint stack[div][3];
 
     jint (*stack)[3];
     stack = (jint(*)[3]) malloc(sizeof(jint) * div * 3);
@@ -212,9 +201,7 @@ void doVerticalBlur(jint *pix, jint w, jint h, jint radius, jint startX, jint st
             boutsum -= sir[2];
 
 
-//            if (y == 0) {
             vmin[y] = min(y + radius + 1, hm);
-//            }
             p = pix[vmin[y] * w + x];
 
             sir[0] = (p & 0xff0000) >> 16;
@@ -295,3 +282,7 @@ Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeStackBlur(JNIEnv *env, jobjec
     AndroidBitmap_unlockPixels(env, jbitmap);
 
 }
+
+#ifdef __cplusplus
+}
+#endif

@@ -8,7 +8,6 @@ object TextureCache {
     private val cachePool = object : CachePool<Size, Texture>() {
         override fun create(key: Size): Texture {
             return TextureFactory.create(key.width, key.height)
-
         }
 
         override fun checkHit(key: Size, value: Texture): Boolean {

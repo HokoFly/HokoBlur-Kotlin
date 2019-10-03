@@ -92,27 +92,20 @@ class EglBuffer {
      */
     private fun unbindEglCurrent() {
         egl.eglMakeCurrent(eglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT)
-
     }
 
     private fun getRenderer(): OffScreenBlurRenderer {
-        var renderer: OffScreenBlurRenderer? = threadRenderer.get()
-        if (renderer == null) {
-            renderer = OffScreenBlurRenderer()
-            threadRenderer.set(renderer)
+        val renderer = threadRenderer.get()
+        return renderer ?: OffScreenBlurRenderer().also {
+            threadRenderer.set(it)
         }
-
-        return renderer
     }
 
     private fun getEGLContext(): EGLContext? {
-        var eglContext: EGLContext? = threadEGLContext.get()
-        if (eglContext == null) {
-            eglContext = egl.eglCreateContext(eglDisplay, eglConfigs[0], EGL10.EGL_NO_CONTEXT, contextAttrs)
-            threadEGLContext.set(eglContext)
+        val eglContext = threadEGLContext.get()
+        return eglContext ?: egl.eglCreateContext(eglDisplay, eglConfigs[0], EGL10.EGL_NO_CONTEXT, contextAttrs).also {
+            threadEGLContext.set(it)
         }
-
-        return eglContext
     }
 
 

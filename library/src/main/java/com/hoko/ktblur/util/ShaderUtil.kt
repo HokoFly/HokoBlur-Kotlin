@@ -115,9 +115,9 @@ object ShaderUtil {
         )
 
         when (mode) {
-            Mode.BOX -> sb.append(ShaderUtil.boxSampleCode)
-            Mode.GAUSSIAN -> sb.append(ShaderUtil.gaussianSampleCode)
-            Mode.STACK -> sb.append(ShaderUtil.stackSampleCode)
+            Mode.BOX -> sb.append(boxSampleCode)
+            Mode.GAUSSIAN -> sb.append(gaussianSampleCode)
+            Mode.STACK -> sb.append(stackSampleCode)
         }
         sb.append("}")
 

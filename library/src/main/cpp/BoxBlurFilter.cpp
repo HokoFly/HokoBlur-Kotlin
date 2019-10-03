@@ -3,10 +3,12 @@
 //
 
 #include "include/BoxBlurFilter.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void boxBlurHorizontal(jint *in, jint *out, jint width, jint height, jint radius, jint startX,
                        jint startY, jint deltaX, jint deltaY) {
-    jint widthMinus1 = width - 1;
     jint tableSize = 2 * radius + 1;
     jint divide[256 * tableSize];
 
@@ -53,7 +55,6 @@ void boxBlurHorizontal(jint *in, jint *out, jint width, jint height, jint radius
 void
 boxBlurVertical(jint *in, jint *out, jint width, jint height, jint radius, jint startX, jint startY,
                 jint deltaX, jint deltaY) {
-    jint heightMinus1 = height - 1;
     jint tableSize = 2 * radius + 1;
     jint divide[256 * tableSize];
 
@@ -97,7 +98,6 @@ Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jobject 
                                                          jobject jbitmap, jint j_radius,
                                                          jint j_cores, jint j_index,
                                                          jint j_direction) {
-
 
     if (jbitmap == nullptr) {
         return;
@@ -149,3 +149,7 @@ Java_com_hoko_ktblur_filter_NativeBlurFilter_nativeBoxBlur(JNIEnv *env, jobject 
     free(copy);
 
 }
+
+#ifdef __cplusplus
+}
+#endif

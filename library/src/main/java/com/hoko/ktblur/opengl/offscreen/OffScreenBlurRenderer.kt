@@ -105,8 +105,8 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
     private fun prepare(bitmap: Bitmap): BlurContext {
         val context = (EGLContext.getEGL() as EGL10).eglGetCurrentContext()
-        if (context == EGL10.EGL_NO_CONTEXT) {
-            throw IllegalStateException("This thread has no EGLContext.")
+        check(context !== EGL10.EGL_NO_CONTEXT) {
+            "This thread has no EGLContext."
         }
 
         if (needRelink || !this::mProgram.isInitialized) {
@@ -125,7 +125,6 @@ class OffScreenBlurRenderer : Render<Bitmap> {
     private fun draw(blurContext: BlurContext) {
         drawOneDimenBlur(blurContext, true)
         drawOneDimenBlur(blurContext, false)
-
     }
 
     private fun drawOneDimenBlur(blurContext: BlurContext, isHorizontal: Boolean) {

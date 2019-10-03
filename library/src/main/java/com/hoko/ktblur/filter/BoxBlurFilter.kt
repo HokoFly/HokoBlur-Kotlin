@@ -33,8 +33,6 @@ internal object BoxBlurFilter {
         }
 
         var inIndex = 0
-
-        //
         for (y in 0 until height) {
             var ta = 0
             var tr = 0
@@ -114,6 +112,5 @@ internal object BoxBlurFilter {
             }
         }
     }
-
 
 }

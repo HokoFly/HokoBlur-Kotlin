@@ -20,15 +20,12 @@ fun View.getBitmap(translateX: Int, translateY: Int, sampleFactor: Float): Bitma
         bitmap.eraseColor(Color.parseColor("#f6f6f6"))
     }
 
-    val canvas = Canvas(bitmap)
-    canvas.translate(
-        (-(translateX * scale).toInt()).toFloat(), (-(translateY * scale).toInt()).toFloat()
-    )
-    if (sampleFactor > 1.0f) {
-        canvas.scale(scale, scale)
+    val canvas = Canvas(bitmap).apply {
+        translate((-(translateX * scale).toInt()).toFloat(), (-(translateY * scale).toInt()).toFloat())
+        if (sampleFactor > 1.0f) {
+            scale(scale, scale)
+        }
     }
-
     draw(canvas)
-
     return bitmap
 }

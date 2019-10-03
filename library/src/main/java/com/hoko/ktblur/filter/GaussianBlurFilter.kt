@@ -2,6 +2,7 @@ package com.hoko.ktblur.filter
 
 import com.hoko.ktblur.params.Direction
 import com.hoko.ktblur.util.MathUtil.Companion.clamp
+import kotlin.math.exp
 
 internal object GaussianBlurFilter {
 
@@ -101,7 +102,6 @@ internal object GaussianBlurFilter {
                 outPixels[outIndex] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
             }
         }
-        //
     }
 
     /**
@@ -113,15 +113,13 @@ internal object GaussianBlurFilter {
         val sigma = (r + 1) / 2.0f
         val sigma22 = 2f * sigma * sigma
         var total = 0f
-        var index = 0
-        for (row in -r..r) {
-            matrix[index] = (Math.exp((-1 * (row * row) / sigma22).toDouble()) / sigma).toFloat()
-
+        for ((index, row) in (-r..r).withIndex()) {
+            matrix[index] = (exp((-1 * (row * row) / sigma22).toDouble()) / sigma).toFloat()
             total += matrix[index]
-            index++
         }
-        for (i in 0 until rows)
+        for (i in 0 until rows) {
             matrix[i] /= total
+        }
 
         return matrix
     }

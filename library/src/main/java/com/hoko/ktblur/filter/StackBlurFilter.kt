@@ -1,6 +1,7 @@
 package com.hoko.ktblur.filter
 
 import com.hoko.ktblur.params.Direction
+import kotlin.math.max
 
 internal object StackBlurFilter {
     fun doBlur(pix: IntArray, w: Int, h: Int, radius: Int, direction: Direction) {
@@ -18,7 +19,6 @@ internal object StackBlurFilter {
 
     private fun blurHorizontal(pix: IntArray, w: Int, h: Int, radius: Int) {
         val wm = w - 1
-        val hm = h - 1
         val wh = w * h
         val div = radius + radius + 1
 
@@ -32,7 +32,6 @@ internal object StackBlurFilter {
         var y: Int
         var i: Int
         var p: Int
-        val yp: Int
         var yi: Int
         var yw: Int
         val vmin = IntArray(Math.max(w, h))
@@ -58,7 +57,6 @@ internal object StackBlurFilter {
         var rinsum: Int
         var ginsum: Int
         var binsum: Int
-
 
         y = 0
         while (y < h) {
@@ -152,7 +150,6 @@ internal object StackBlurFilter {
     }
 
     private fun blurVertical(pix: IntArray, w: Int, h: Int, radius: Int) {
-        val wm = w - 1
         val hm = h - 1
         val wh = w * h
         val div = radius + radius + 1
@@ -169,17 +166,13 @@ internal object StackBlurFilter {
         var p: Int
         var yp: Int
         var yi: Int
-        val yw: Int
-        val vmin = IntArray(Math.max(w, h))
+        val vmin = IntArray(max(w, h))
 
         var divsum = div + 1 shr 1
         divsum *= divsum
         val dv = IntArray(256 * divsum) { index ->
             (index / divsum)
         }
-
-        yi = 0
-        yw = yi
 
         val stack = Array(div) { IntArray(3) }
         var stackpointer: Int
@@ -252,7 +245,6 @@ internal object StackBlurFilter {
             while (y < h) {
                 // Preserve alpha channel: ( 0xff000000 & pix[yi] )
                 pix[yi] = -0x1000000 and pix[yi] or (dv[rsum] shl 16) or (dv[gsum] shl 8) or dv[bsum]
-
 
                 rsum -= routsum
                 gsum -= goutsum

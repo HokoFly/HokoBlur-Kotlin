@@ -11,7 +11,7 @@ class NativeBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builde
 
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         if (parallel) {
-            val cores = BlurTaskManager.getWorkersCount()
+            val cores = BlurTaskManager.WORKER_THREADS_COUNT
             val hTasks = ArrayList<BlurSubTask>(cores)
             val vTasks = ArrayList<BlurSubTask>(cores)
             for (i in 0 until cores) {

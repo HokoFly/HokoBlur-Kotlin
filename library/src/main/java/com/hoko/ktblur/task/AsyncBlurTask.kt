@@ -19,14 +19,14 @@ sealed class AsyncBlurTask<in T>(
         val blurResult = BlurResult(callback)
 
         try {
-            blurResult.let {
-                it.bitmap = makeBlur(target)
-                it.success = true
+            blurResult.apply {
+                bitmap = makeBlur(target)
+                success = true
             }
         } catch (e: Throwable) {
-            blurResult.let {
-                it.error = e
-                it.success = false
+            blurResult.apply {
+                error = e
+                success = false
             }
         } finally {
             dispatcher.dispatch(BlurResultRunnable.of(blurResult))
@@ -54,7 +54,7 @@ class BitmapAsyncBlurTask(
 }
 
 class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
-                         callback: AsyncBlurTask.Callback,
+                         callback: Callback,
                          view: View,
                          dispatcher: BlurResultDispatcher
 ) : AsyncBlurTask<View>(blurProcessor, callback, view, dispatcher) {

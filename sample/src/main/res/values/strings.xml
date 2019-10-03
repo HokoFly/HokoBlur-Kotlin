@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">HokoBlur-Kotlin</string>
+    <string-array name="blur_schemes">
+        <item>RenderScript</item>
+        <item>OpenGL</item>
+        <item>Native C/C++</item>
+        <item>JAVA</item>
+    </string-array>
+
+    <string-array name="blur_modes">
+        <item>Gaussian</item>
+        <item>Stack</item>
+        <item>Box</item>
+    </string-array>
+
+    <string name="blur_algorithm">Multiple Blur Algorithms</string>
+    <string name="dynamic_blur">Dynamic Blur</string>
+    <string name="layout_blur">Layout Background Blur</string>
+    <string name="drawable_blur">BlurDrawable</string>
+    <string name="blur_effect_maker">Easy Blur</string>
 </resources>
