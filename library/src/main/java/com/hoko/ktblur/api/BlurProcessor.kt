@@ -22,9 +22,9 @@ interface BlurProcessor {
 
     fun blur(view: View): Bitmap
 
-    fun asyncBlur(bitmap: Bitmap, callback: AsyncBlurTask.Callback) : Future<*>
+    fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) : Future<*>
 
-    fun asyncBlur(view: View, callback: AsyncBlurTask.Callback) : Future<*>
+    fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) : Future<*>
 
 
 

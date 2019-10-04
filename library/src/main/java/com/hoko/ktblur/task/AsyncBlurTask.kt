@@ -7,7 +7,7 @@ import com.hoko.ktblur.api.BlurResultDispatcher
 
 sealed class AsyncBlurTask<in T>(
     protected val blurProcessor: BlurProcessor,
-    private val callback: Callback,
+    private val block: Callback.() -> Unit,
     private val target: T,
     private val dispatcher: BlurResultDispatcher
 ) : Runnable {
@@ -15,7 +15,9 @@ sealed class AsyncBlurTask<in T>(
     abstract fun makeBlur(target: T) : Bitmap
 
     override fun run() {
-
+        val callback = BlurCallback().apply {
+            this.block()
+        }
         val blurResult = BlurResult(callback)
 
         try {
@@ -35,29 +37,29 @@ sealed class AsyncBlurTask<in T>(
     }
 
     interface Callback {
-
-        fun onSuccess(bitmap: Bitmap?)
-
-        fun onFailed(error: Throwable?)
+        var onSuccess: ((Bitmap?) -> Unit)?
+        var onFailed: ((Throwable?) -> Unit)?
+        fun onSuccess(onSuccess: ((Bitmap?) -> Unit)?)
+        fun onFailed(onFailed: ((Throwable?) -> Unit)?)
     }
 }
 
 class BitmapAsyncBlurTask(
     blurProcessor: BlurProcessor,
-    callback: Callback,
+    block: Callback.() -> Unit,
     bitmap: Bitmap,
     dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<Bitmap>(blurProcessor, callback, bitmap, dispatcher) {
+) : AsyncBlurTask<Bitmap>(blurProcessor, block, bitmap, dispatcher) {
     override fun makeBlur(target: Bitmap): Bitmap {
         return blurProcessor.blur(target)
     }
 }
 
 class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
-                         callback: Callback,
+                         block: Callback.() -> Unit,
                          view: View,
                          dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<View>(blurProcessor, callback, view, dispatcher) {
+) : AsyncBlurTask<View>(blurProcessor, block, view, dispatcher) {
 
     override fun makeBlur(target: View): Bitmap {
         return blurProcessor.blur(target)

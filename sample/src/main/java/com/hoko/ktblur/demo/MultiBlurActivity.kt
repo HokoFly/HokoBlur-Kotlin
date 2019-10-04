@@ -25,6 +25,7 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         private const val INIT_RADIUS = 5
         private val TEST_IMAGE_RES = intArrayOf(R.drawable.sample1, R.drawable.sample2)
     }
+
     private var mCurrentImageRes = TEST_IMAGE_RES[0]
     private var index = 0
     private lateinit var mSeekBar: SeekBar
@@ -89,16 +90,16 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
             runOnUiThread {
                 endAnimators()
-                mAnimator = ValueAnimator.ofInt(0, (mRadius / 25f * 1000).toInt()).also {animator ->
-                    animator.interpolator = LinearInterpolator()
-                    animator.addUpdateListener { animation ->
-                        mSeekBar.progress = animation.animatedValue as Int
-                        updateImage((animation.animatedValue as Int / 1000f * 25f).toInt())
-                    }
+                mAnimator = ValueAnimator.ofInt(0, (mRadius / 25f * 1000).toInt()).also { animator ->
+                        animator.interpolator = LinearInterpolator()
+                        animator.addUpdateListener { animation ->
+                            mSeekBar.progress = animation.animatedValue as Int
+                            updateImage((animation.animatedValue as Int / 1000f * 25f).toInt())
+                        }
 
-                    animator.duration = 300
-                    animator.start()
-                }
+                        animator.duration = 300
+                        animator.start()
+                    }
 
             }
         }
@@ -142,7 +143,7 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
             }
             R.id.anim_btn -> {
                 endAnimators()
-                mRoundAnimator = ValueAnimator.ofInt(0, 1000, 0).also {animator ->
+                mRoundAnimator = ValueAnimator.ofInt(0, 1000, 0).also { animator ->
                     animator.interpolator = LinearInterpolator()
                     animator.addUpdateListener { animation ->
                         mSeekBar.progress = animation.animatedValue as Int
@@ -180,11 +181,9 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     private fun updateImage(radius: Int) {
         mRadius = radius
         cancelPreTask()
-        mFuture = mDispatcher.submit(object : BlurTask(mInBitmap, mProcessor, radius) {
-            override fun onBlurSuccess(bitmap: Bitmap) {
-                if (!isFinishing) {
-                    runOnUiThread { mImageView.setImageBitmap(bitmap) }
-                }
+        mFuture = mDispatcher.submit(BlurTask(mInBitmap, mProcessor, radius) { bitmap ->
+            if (!isFinishing) {
+                runOnUiThread { mImageView.setImageBitmap(bitmap) }
             }
         })
     }
@@ -215,20 +214,20 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         cancelPreTask()
     }
 
-    private abstract class BlurTask internal constructor(
+    private class BlurTask internal constructor(
         private val bitmap: Bitmap?,
         private val blurProcessor: BlurProcessor?,
-        private val radius: Int
+        private val radius: Int,
+        private val onBlurSuccess: (bitmap: Bitmap) -> Unit
     ) : Runnable {
 
         override fun run() {
             if (bitmap != null && !bitmap.isRecycled && blurProcessor != null) {
                 blurProcessor.radius = radius
-                onBlurSuccess(blurProcessor.blur(bitmap))
+                onBlurSuccess.invoke(blurProcessor.blur(bitmap))
             }
         }
 
-        internal abstract fun onBlurSuccess(bitmap: Bitmap)
     }
 
 }

@@ -85,11 +85,11 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
         return processor().blur(view)
     }
 
-    override fun asyncBlur(bitmap: Bitmap, callback: AsyncBlurTask.Callback) : Future<*> {
-        return processor().asyncBlur(bitmap, callback)
+    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) : Future<*> {
+        return processor().asyncBlur(bitmap, block)
     }
 
-    override fun asyncBlur(view: View, callback: AsyncBlurTask.Callback) : Future<*> {
-        return processor().asyncBlur(view, callback)
+    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) : Future<*> {
+        return processor().asyncBlur(view, block)
     }
 }

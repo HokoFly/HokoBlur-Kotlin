@@ -55,12 +55,12 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
 
-    override fun asyncBlur(bitmap: Bitmap, callback: AsyncBlurTask.Callback): Future<*> {
-        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, callback, bitmap, dispatcher))
+    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit): Future<*> {
+        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, block, bitmap, dispatcher))
     }
 
-    override fun asyncBlur(view: View, callback: AsyncBlurTask.Callback): Future<*> {
-        return BlurTaskManager.submit(ViewAsyncBlurTask(this, callback, view, dispatcher))
+    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit): Future<*> {
+        return BlurTaskManager.submit(ViewAsyncBlurTask(this, block, view, dispatcher))
     }
 
     private fun checkParams() {

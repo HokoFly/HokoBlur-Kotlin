@@ -1,5 +1,6 @@
 package com.hoko.ktblur.task
 
+
 class BlurResultRunnable private constructor(private val result: BlurResult) : Runnable {
     companion object {
         fun of(result: BlurResult): BlurResultRunnable {
@@ -10,9 +11,9 @@ class BlurResultRunnable private constructor(private val result: BlurResult) : R
     override fun run() {
         result.run {
             if (success) {
-                callback.onSuccess(bitmap)
+                callback.onSuccess?.invoke(bitmap)
             } else {
-                callback.onFailed(error)
+                callback.onFailed?.invoke(error)
             }
         }
 

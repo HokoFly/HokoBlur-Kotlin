@@ -1,13 +1,11 @@
 package com.hoko.ktblur.demo
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.hoko.ktblur.HokoBlur
 import com.hoko.ktblur.params.Scheme
-import com.hoko.ktblur.task.AsyncBlurTask
 
 
 class EasyBlurActivity : AppCompatActivity() {
@@ -39,31 +37,28 @@ class EasyBlurActivity : AppCompatActivity() {
             .forceCopy(false)
             .sampleFactor(5.0f)
             .needUpscale(true)
-            .asyncBlur(bitmap, object : AsyncBlurTask.Callback {
-                override fun onFailed(error: Throwable?) {
-                    error?.printStackTrace()
+            .asyncBlur(bitmap) {
+                onSuccess {
+                    imageView2.setImageBitmap(it)
                 }
-
-                override fun onSuccess(bitmap: Bitmap?) {
-                    imageView2.setImageBitmap(bitmap)
+                onFailed {
+                    it?.printStackTrace()
                 }
-
-            })
+            }
 
         imageView1.post {
             HokoBlur.with(this)
                 .scheme(Scheme.NATIVE)
                 .translateX(100)
                 .translateY(100)
-                .asyncBlur(imageView1, object : AsyncBlurTask.Callback {
-                    override fun onFailed(error: Throwable?) {
-                        error?.printStackTrace()
+                .asyncBlur(imageView1) {
+                    onSuccess {
+                        imageView3.setImageBitmap(it)
                     }
-
-                    override fun onSuccess(bitmap: Bitmap?) {
-                        imageView3.setImageBitmap(bitmap)
+                    onFailed {
+                        it?.printStackTrace()
                     }
-                })
+                }
         }
 
     }
