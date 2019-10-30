@@ -2,9 +2,11 @@ package com.hoko.ktblur.opengl.program
 
 import com.hoko.ktblur.api.Program
 
-object ProgramFactory {
+class ProgramFactory {
 
-    fun create(vertexShaderCode: String, fragmentShaderCode: String): Program {
-        return SimpleProgram(vertexShaderCode, fragmentShaderCode)
+    companion object {
+        fun create(vertexShaderCode: String, fragmentShaderCode: String): Program {
+            return SimpleProgram(vertexShaderCode, fragmentShaderCode)
+        }
     }
 }
