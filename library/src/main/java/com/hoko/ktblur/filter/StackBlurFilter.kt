@@ -1,7 +1,9 @@
 package com.hoko.ktblur.filter
 
 import com.hoko.ktblur.params.Direction
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 internal object StackBlurFilter {
     fun doBlur(pix: IntArray, w: Int, h: Int, radius: Int, direction: Direction) {
@@ -29,7 +31,6 @@ internal object StackBlurFilter {
         var gsum: Int
         var bsum: Int
         var x: Int
-        var y: Int
         var i: Int
         var p: Int
         var yi: Int
@@ -58,7 +59,7 @@ internal object StackBlurFilter {
         var ginsum: Int
         var binsum: Int
 
-        y = 0
+        var y = 0
         while (y < h) {
             bsum = 0
             gsum = bsum
@@ -71,12 +72,12 @@ internal object StackBlurFilter {
             rinsum = ginsum
             i = -radius
             while (i <= radius) {
-                p = pix[yi + Math.min(wm, Math.max(i, 0))]
+                p = pix[yi + min(wm, max(i, 0))]
                 sir = stack[i + radius]
                 sir[0] = p and 0xff0000 shr 16
                 sir[1] = p and 0x00ff00 shr 8
                 sir[2] = p and 0x0000ff
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - abs(i)
                 rsum += sir[0] * rbs
                 gsum += sir[1] * rbs
                 bsum += sir[2] * rbs
@@ -160,7 +161,6 @@ internal object StackBlurFilter {
         var rsum: Int
         var gsum: Int
         var bsum: Int
-        var x: Int
         var y: Int
         var i: Int
         var p: Int
@@ -196,7 +196,7 @@ internal object StackBlurFilter {
             i++
         }
 
-        x = 0
+        var x = 0
         while (x < w) {
             bsum = 0
             gsum = bsum
@@ -210,7 +210,7 @@ internal object StackBlurFilter {
             yp = -radius * w
             i = -radius
             while (i <= radius) {
-                yi = Math.max(0, yp) + x
+                yi = max(0, yp) + x
 
                 sir = stack[i + radius]
 
@@ -218,7 +218,7 @@ internal object StackBlurFilter {
                 sir[1] = g[yi]
                 sir[2] = b[yi]
 
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - abs(i)
 
                 rsum += r[yi] * rbs
                 gsum += g[yi] * rbs

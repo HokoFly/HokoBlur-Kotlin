@@ -18,15 +18,14 @@ class EglBuffer {
         private const val EGL_OPENGL_ES2_BIT: Int = 4
     }
 
-    private val egl: EGL10 = EGLContext.getEGL() as EGL10
-    private val eglDisplay: EGLDisplay = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
-    private val eglConfigs: Array<EGLConfig?> = Array(1) {null}
-    private val contextAttrs: IntArray = intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE)
-
+    private val egl: EGL10 by lazy { EGLContext.getEGL() as EGL10 }
+    private val eglDisplay: EGLDisplay by lazy { egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY) }
+    private val eglConfigs: Array<EGLConfig?> = arrayOfNulls(1)
+    private val contextAttrs: IntArray by lazy { intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE) }
     //EGLContext、EGLSurface and Renderer are bound to current thread.
     // So here use the ThreadLocal to implement Thread isolation.
-    private val threadRenderer = ThreadLocal<OffScreenBlurRenderer>()
-    private val threadEGLContext = ThreadLocal<EGLContext>()
+    private val threadRenderer by lazy { ThreadLocal<OffScreenBlurRenderer>() }
+    private val threadEGLContext by lazy { ThreadLocal<EGLContext>() }
 
     init {
         val configAttrs = intArrayOf(
@@ -39,9 +38,10 @@ class EglBuffer {
             EGL10.EGL_SURFACE_TYPE, EGL10.EGL_PBUFFER_BIT,
             EGL10.EGL_NONE
         )
-
-        egl.eglInitialize(eglDisplay, IntArray(2))
-        egl.eglChooseConfig(eglDisplay, configAttrs, eglConfigs, 1, IntArray(1))
+        egl.apply {
+            eglInitialize(eglDisplay, IntArray(2))
+            eglChooseConfig(eglDisplay, configAttrs, eglConfigs, 1, IntArray(1))
+        }
     }
 
     fun getBlurBitmap(bitmap: Bitmap): Bitmap {
@@ -64,13 +64,9 @@ class EglBuffer {
 
     private fun createSurface(width: Int, height: Int): EGLSurface {
         val surfaceAttrs = intArrayOf(EGL10.EGL_WIDTH, width, EGL10.EGL_HEIGHT, height, EGL10.EGL_NONE)
-
-        val eglSurface = egl.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs)
-
-        egl.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, getEGLContext())
-
-        return eglSurface
-
+        return egl.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs).also {
+            egl.eglMakeCurrent(eglDisplay, it, it, getEGLContext())
+        }
     }
 
 
@@ -110,11 +106,11 @@ class EglBuffer {
 
 
     fun setBlurRadius(radius: Int) {
-        getRenderer().setBlurRadius(radius)
+        getRenderer().radius = radius
     }
 
     fun setBlurMode(mode: Mode) {
-        getRenderer().setBlurMode(mode)
+        getRenderer().mode = mode
     }
 
     fun free() {

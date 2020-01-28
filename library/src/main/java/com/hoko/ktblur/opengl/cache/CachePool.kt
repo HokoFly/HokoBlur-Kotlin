@@ -3,7 +3,7 @@ package com.hoko.ktblur.opengl.cache
 
 abstract class CachePool<in K, V>(private val maxSize: Int) {
 
-    private val internalCache: MutableList<V> = ArrayList()
+    private val internalCache by lazy { mutableListOf<V>() }
 
     constructor():this(1024)
 
@@ -12,11 +12,7 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
     }
 
     fun get(key: K): V {
-        val removed: V? = remove(key)
-        if (removed != null) {
-            return removed
-        }
-        return create(key)
+        return remove(key) ?: create(key)
     }
 
     fun put(value: V) {
@@ -50,11 +46,9 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
     }
 
     fun delete(key: K) {
-        val removed: V? = remove(key)
-        if (removed != null) {
+        remove(key)?.let {removed ->
             entryDeleted(removed)
         }
-
     }
 
     protected abstract fun create(key: K): V
@@ -66,8 +60,7 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
         val removedCollection = ArrayList<V>()
         synchronized(this) {
             while(internalCache.size > maxSize && internalCache.isNotEmpty()) {
-                val removed = internalCache.removeAt(0)
-                if (removed != null) {
+                internalCache.removeAt(0)?.let {removed ->
                     removedCollection.add(removed)
                 }
             }
@@ -80,10 +73,6 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
 
     protected open fun entryDeleted(removed: V) {
 
-    }
-
-    fun maxSize(): Int {
-        return maxSize
     }
 
     fun evictAll() {

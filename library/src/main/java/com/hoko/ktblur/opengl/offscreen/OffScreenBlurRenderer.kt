@@ -59,32 +59,36 @@ class OffScreenBlurRenderer : Render<Bitmap> {
     private val drawListBuffer: ShortBuffer
     private val texCoordBuffer: FloatBuffer
 
-    private var radius: Int = 0
-    private var mode: Mode = Mode.STACK
+    internal var radius: Int = 0
+    internal var mode: Mode = Mode.STACK
+        set(mode) {
+            needRelink = true
+            field = mode
+        }
 
     @Volatile
     private var needRelink: Boolean = true
 
 
     init {
-        val bb = ByteBuffer.allocateDirect(squareCoords.size * 4)
-        bb.order(ByteOrder.nativeOrder())
-        vertexBuffer = bb.asFloatBuffer()
-        vertexBuffer.put(squareCoords)
-        vertexBuffer.position(0)
-
-        val dlb = ByteBuffer.allocateDirect(drawOrder.size * 2)
-        dlb.order(ByteOrder.nativeOrder())
-        drawListBuffer = dlb.asShortBuffer()
-        drawListBuffer.put(drawOrder)
-        drawListBuffer.position(0)
-
-        val tcb = ByteBuffer.allocateDirect(texHorizontalCoords.size * 4)
-        tcb.order(ByteOrder.nativeOrder())
-        texCoordBuffer = tcb.asFloatBuffer()
-        texCoordBuffer.put(texHorizontalCoords)
-        texCoordBuffer.position(0)
-
+        vertexBuffer = ByteBuffer.allocateDirect(squareCoords.size * 4).apply { order(ByteOrder.nativeOrder()) }.let {
+            it.asFloatBuffer().apply {
+                put(squareCoords)
+                position(0)
+            }
+        }
+        drawListBuffer = ByteBuffer.allocateDirect(drawOrder.size * 2).apply { order(ByteOrder.nativeOrder()) }.let {
+            it.asShortBuffer().apply {
+                put(drawOrder)
+                position(0)
+            }
+        }
+        texCoordBuffer = ByteBuffer.allocateDirect(texHorizontalCoords.size * 4).apply { order(ByteOrder.nativeOrder()) }.let {
+            it.asFloatBuffer().apply {
+                put(texHorizontalCoords)
+                position(0)
+            }
+        }
     }
 
     override fun onDrawFrame(t: Bitmap) {
@@ -202,15 +206,6 @@ class OffScreenBlurRenderer : Render<Bitmap> {
     fun free() {
         needRelink = true
         deletePrograms()
-    }
-
-    internal fun setBlurMode(mode: Mode) {
-        needRelink = true
-        this.mode = mode
-    }
-
-    internal fun setBlurRadius(radius: Int) {
-        this.radius = radius
     }
 
     private class BlurContext(internal val bitmap: Bitmap) {

@@ -14,7 +14,7 @@ class AndroidBlurResultDispatcher (handler: Handler) : BlurResultDispatcher {
         handler.post(runnable)
     }
 
-    override fun dispatch(runnable: BlurResultRunnable) {
+    override fun dispatch(runnable: Runnable) {
         resultExecutor.execute(runnable)
     }
 }

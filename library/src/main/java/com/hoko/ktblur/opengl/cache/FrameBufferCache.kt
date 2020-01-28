@@ -4,7 +4,7 @@ import com.hoko.ktblur.api.FrameBuffer
 import com.hoko.ktblur.opengl.framebuffer.FrameBufferFactory
 
 object FrameBufferCache {
-    @Volatile private var sDisplayFrameBuffer: FrameBuffer? = null
+    val sDisplayFrameBuffer: FrameBuffer by lazy { FrameBufferFactory.getDisplayFrameBuffer() }
 
     private val cachePool = object : CachePool<Any, FrameBuffer>() {
         override fun create(key: Any): FrameBuffer {
@@ -25,28 +25,12 @@ object FrameBufferCache {
     }
 
 
-    fun getDisplayFrameBuffer(): FrameBuffer? {
-        if (sDisplayFrameBuffer == null) {
-            synchronized(this) {
-                if (sDisplayFrameBuffer == null) {
-                    sDisplayFrameBuffer = FrameBufferFactory.getDisplayFrameBuffer()
-                }
-            }
-        }
-
-        return sDisplayFrameBuffer
-    }
     fun recycleFrameBuffer(frameBuffer: FrameBuffer) {
         cachePool.put(frameBuffer)
     }
 
     fun clear() {
         cachePool.evictAll()
-        synchronized(this) {
-            sDisplayFrameBuffer?.delete()
-            sDisplayFrameBuffer = null
-        }
-
     }
 
 }
