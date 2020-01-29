@@ -20,7 +20,7 @@ class BlurSubTask(
 
     override fun call() {
         check(!bitmapOut.isRecycled)
-        check(cores > 0)
+        require(cores > 0)
         applyPixelsBlur()
     }
 

@@ -1,14 +1,6 @@
 package com.hoko.ktblur.util
 
+import kotlin.math.max
+import kotlin.math.min
 
-class MathUtil {
-    companion object {
-        fun clamp(i: Int, minValue: Int, maxValue: Int): Int {
-            return when {
-                i < minValue -> minValue
-                i > maxValue -> maxValue
-                else -> i
-            }
-        }
-    }
-}
+fun Int.clamp(minValue: Int, maxValue: Int): Int = min(max(this, minValue), maxValue)

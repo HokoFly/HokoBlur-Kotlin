@@ -1,15 +1,15 @@
 package com.hoko.ktblur.processor
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.renderscript.Allocation
 import androidx.renderscript.Element
 import androidx.renderscript.RenderScript
 import androidx.renderscript.ScriptIntrinsicBlur
-import android.util.Log
 import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.renderscript.ScriptC_BoxBlur
 import com.hoko.ktblur.renderscript.ScriptC_StackBlur
-import com.hoko.ktblur.util.MathUtil
+import com.hoko.ktblur.util.clamp
 
 class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
     companion object {
@@ -56,40 +56,42 @@ class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(
 
 
     private fun doBoxBlur(bitmap: Bitmap, input: Allocation, output: Allocation) {
+        boxBlurScript.apply {
+            _input = input
+            _output = output
+            _width = bitmap.width
+            _height = bitmap.height
+            _radius = radius
+        }.forEach_boxblur_h(input)
 
-        boxBlurScript._input = input
-        boxBlurScript._output = output
-        boxBlurScript._width = bitmap.width
-        boxBlurScript._height = bitmap.height
-        boxBlurScript._radius = radius
-        boxBlurScript.forEach_boxblur_h(input)
-
-        boxBlurScript._input = output
-        boxBlurScript._output = input
-        boxBlurScript.forEach_boxblur_v(output)
+        boxBlurScript.apply {
+            _input = output
+            _output = input
+        }.forEach_boxblur_v(output)
 
     }
 
     private fun doGaussianBlur(input: Allocation, output: Allocation) {
         // RenderScript won't work, if too large blur radius
-        radius = MathUtil.clamp(radius, 0, RS_MAX_RADIUS)
-        gaussianBlurScript.setRadius(radius.toFloat())
-        //        mAllocationIn.copyFrom(input);
-        gaussianBlurScript.setInput(input)
-        gaussianBlurScript.forEach(output)
+        radius = radius.clamp(0, RS_MAX_RADIUS)
+        gaussianBlurScript.apply {
+            setRadius(radius.toFloat())
+            setInput(input)
+        }.forEach(output)
     }
 
     private fun doStackBlur(bitmap: Bitmap, input: Allocation, output: Allocation) {
+        stackBlurScript.apply {
+            _input = input
+            _output = output
+            _width = bitmap.width
+            _height = bitmap.height
+            _radius = radius
+        }.forEach_stackblur_v(input)
 
-        stackBlurScript._input = input
-        stackBlurScript._output = output
-        stackBlurScript._width = bitmap.width
-        stackBlurScript._height = bitmap.height
-        stackBlurScript._radius = radius
-        stackBlurScript.forEach_stackblur_v(input)
-
-        stackBlurScript._input = output
-        stackBlurScript._output = input
-        stackBlurScript.forEach_stackblur_h(output)
+        stackBlurScript.apply {
+            _input = output
+            _output = input
+        }.forEach_stackblur_h(output)
     }
 }

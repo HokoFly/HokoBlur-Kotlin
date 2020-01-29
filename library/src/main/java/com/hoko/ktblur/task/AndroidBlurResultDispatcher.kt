@@ -7,7 +7,7 @@ import java.util.concurrent.Executor
 
 class AndroidBlurResultDispatcher (handler: Handler) : BlurResultDispatcher {
     companion object {
-        internal val MAIN_THREAD_DISPATCHER : BlurResultDispatcher = AndroidBlurResultDispatcher(SingleMainHandler.get())
+        internal val MAIN_THREAD_DISPATCHER : BlurResultDispatcher by lazy { AndroidBlurResultDispatcher(SingleMainHandler.get()) }
     }
 
     private val resultExecutor: Executor = Executor { runnable ->

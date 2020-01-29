@@ -13,6 +13,6 @@ class DynamicBlurActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dynamic_blur)
         val blurredView: RelativeLayout = findViewById(R.id.container)
         val dragBlurringView: DragBlurringView = findViewById(R.id.blurring)
-        dragBlurringView.setBlurredView(blurredView)
+        dragBlurringView.blurredView = blurredView
     }
 }

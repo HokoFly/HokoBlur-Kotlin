@@ -25,7 +25,7 @@ class DragBlurringView : View {
     private var oldX: Float = 0f
     private var oldY: Float = 0f
 
-    private lateinit var blurredView: View
+    lateinit var blurredView: View
     private var toBlurBitmap: Bitmap? = null
     private var blurringCanvas: Canvas? = null
     private var processor: BlurProcessor = HokoBlur.with(context)
@@ -84,11 +84,6 @@ class DragBlurringView : View {
         return Canvas(b).apply {
             scale(1.0f / DOWNSAMPLE_FACTOR, 1.0f / DOWNSAMPLE_FACTOR)
         }
-    }
-
-
-    fun setBlurredView(blurredView: View) {
-        this.blurredView = blurredView
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

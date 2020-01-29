@@ -12,8 +12,8 @@ class OriginBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builde
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         if (parallel) {
             val cores = BlurTaskManager.WORKER_THREADS_COUNT
-            val hTasks = ArrayList<BlurSubTask>(cores)
-            val vTasks = ArrayList<BlurSubTask>(cores)
+            val hTasks = mutableListOf<BlurSubTask>()
+            val vTasks = mutableListOf<BlurSubTask>()
             for (i in 0 until cores) {
                 hTasks.add(BlurSubTask(Scheme.KOTLIN, mode, bitmap, radius, i, cores, Direction.HORIZONTAL))
                 vTasks.add(BlurSubTask(Scheme.KOTLIN, mode, bitmap, radius, i, cores, Direction.VERTICAL))

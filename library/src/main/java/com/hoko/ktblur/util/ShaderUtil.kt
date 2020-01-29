@@ -6,9 +6,8 @@ import com.hoko.ktblur.params.Mode
 /**
  * Created by yuxfzju on 16/9/4.
  */
-object ShaderUtil {
 
-    val vertexCode: String = """
+val vertexCode: String = """
         uniform mat4 uMVPMatrix;
         uniform mat4 uTexMatrix;
         attribute vec2 aTexCoord;
@@ -21,11 +20,11 @@ object ShaderUtil {
     """.trimIndent()
 
 
-    /**
-     * If set kernel weight array in advance, the GPU registers have no enough space.
-     * So compute the weight in the code directly.
-     */
-    private val gaussianSampleCode: String = """
+/**
+ * If set kernel weight array in advance, the GPU registers have no enough space.
+ * So compute the weight in the code directly.
+ */
+private val gaussianSampleCode: String = """
         int diameter = 2 * uRadius + 1;
         vec4 sampleTex;
         vec3 col;
@@ -41,11 +40,11 @@ object ShaderUtil {
         gl_FragColor = vec4(col / weightSum, sampleTex.a);
     """.trimIndent()
 
-    /**
-     * If set kernel weight array in advance, the GPU registers have no enough space.
-     * So compute the weight in the code directly.
-     */
-    private val boxSampleCode: String = """
+/**
+ * If set kernel weight array in advance, the GPU registers have no enough space.
+ * So compute the weight in the code directly.
+ */
+private val boxSampleCode: String = """
         int diameter = 2 * uRadius + 1;
         vec4 sampleTex;
         vec3 col;
@@ -62,11 +61,11 @@ object ShaderUtil {
     """.trimIndent()
 
 
-    /**
-     * If set kernel weight array in advance, the GPU registers have no enough space.
-     * So compute the weight in the code directly.
-     */
-    private val stackSampleCode: String = """
+/**
+ * If set kernel weight array in advance, the GPU registers have no enough space.
+ * So compute the weight in the code directly.
+ */
+private val stackSampleCode: String = """
         int diameter = 2 * uRadius + 1;
         vec4 sampleTex;
         vec3 col;
@@ -82,10 +81,10 @@ object ShaderUtil {
         gl_FragColor = vec4(col / weightSum, sampleTex.a);
     """.trimIndent()
 
-    /**
-     * copy the texture
-     */
-    val copyFragmentCode: String = """
+/**
+ * copy the texture
+ */
+val copyFragmentCode: String = """
         precision mediump float;
         varying vec2 vTexCoord;
         uniform sampler2D uTexture;
@@ -97,10 +96,10 @@ object ShaderUtil {
         }
     """.trimIndent()
 
-    fun getFragmentShaderCode(mode: Mode): String {
+fun getFragmentShaderCode(mode: Mode): String {
 
-        val sb = StringBuilder(
-            """
+    val sb = StringBuilder(
+        """
                 precision mediump float;
                 varying vec2 vTexCoord;
                 uniform sampler2D uTexture;
@@ -112,17 +111,14 @@ object ShaderUtil {
                 }
                 void main() {
             """.trimIndent()
-        )
+    )
 
-        when (mode) {
-            Mode.BOX -> sb.append(boxSampleCode)
-            Mode.GAUSSIAN -> sb.append(gaussianSampleCode)
-            Mode.STACK -> sb.append(stackSampleCode)
-        }
-        sb.append("}")
-
-        return sb.toString()
+    when (mode) {
+        Mode.BOX -> sb.append(boxSampleCode)
+        Mode.GAUSSIAN -> sb.append(gaussianSampleCode)
+        Mode.STACK -> sb.append(stackSampleCode)
     }
+    sb.append("}")
 
-
+    return sb.toString()
 }

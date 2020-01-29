@@ -10,7 +10,7 @@ import com.hoko.ktblur.opengl.cache.FrameBufferCache
 import com.hoko.ktblur.opengl.program.ProgramFactory
 import com.hoko.ktblur.opengl.texture.TextureFactory
 import com.hoko.ktblur.params.Mode
-import com.hoko.ktblur.util.ShaderUtil
+import com.hoko.ktblur.util.getFragmentShaderCode
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -115,7 +115,7 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
         if (needRelink || !this::mProgram.isInitialized) {
             deletePrograms()
-            mProgram = ProgramFactory.create(vertexShaderCode, ShaderUtil.getFragmentShaderCode(mode))
+            mProgram = ProgramFactory.create(vertexShaderCode, getFragmentShaderCode(mode))
             needRelink = false
         }
 

@@ -3,7 +3,7 @@ package com.hoko.ktblur.opengl.program
 import android.opengl.GLES20
 import android.util.Log
 import com.hoko.ktblur.api.Program
-import com.hoko.ktblur.util.GLUtil.Companion.checkGLError
+import com.hoko.ktblur.util.checkGLError
 
 class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Program {
     companion object {

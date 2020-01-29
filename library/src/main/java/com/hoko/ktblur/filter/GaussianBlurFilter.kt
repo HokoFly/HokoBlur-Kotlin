@@ -1,7 +1,7 @@
 package com.hoko.ktblur.filter
 
 import com.hoko.ktblur.params.Direction
-import com.hoko.ktblur.util.MathUtil.Companion.clamp
+import com.hoko.ktblur.util.clamp
 import kotlin.math.exp
 
 internal object GaussianBlurFilter {
@@ -59,9 +59,9 @@ internal object GaussianBlurFilter {
                 }
                 val outIndex = ioffset + x
                 val ia = inPixels[outIndex] shr 24 and 0xff
-                val ir = clamp((r + 0.5).toInt(), 0, 255)
-                val ig = clamp((g + 0.5).toInt(), 0, 255)
-                val ib = clamp((b + 0.5).toInt(), 0, 255)
+                val ir = (r + 0.5).toInt().clamp(0, 255)
+                val ig = (g + 0.5).toInt().clamp(0, 255)
+                val ib = (b + 0.5).toInt().clamp(0, 255)
                 outPixels[outIndex] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
             }
         }
@@ -96,9 +96,9 @@ internal object GaussianBlurFilter {
                 }
                 val outIndex = x + y * width
                 val ia = inPixels[outIndex] shr 24 and 0xff
-                val ir = clamp((r + 0.5).toInt(), 0, 255)
-                val ig = clamp((g + 0.5).toInt(), 0, 255)
-                val ib = clamp((b + 0.5).toInt(), 0, 255)
+                val ir = (r + 0.5).toInt().clamp(0, 255)
+                val ig = (g + 0.5).toInt().clamp(0, 255)
+                val ib = (b + 0.5).toInt().clamp(0, 255)
                 outPixels[outIndex] = (ia shl 24) or (ir shl 16) or (ig shl 8) or ib
             }
         }
