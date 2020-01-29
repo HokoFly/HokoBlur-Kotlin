@@ -1,18 +1,23 @@
 package com.hoko.ktblur.task
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 object BlurTaskManager {
     private val TAG: String = BlurTaskManager::class.java.simpleName
     val WORKER_THREADS_COUNT: Int = if (Runtime.getRuntime().availableProcessors() <= 3) 1 else Runtime.getRuntime().availableProcessors() / 2
 
-    private val ASYNC_BLUR_EXECUTOR = Executors.newFixedThreadPool(WORKER_THREADS_COUNT)
+    private val ASYNC_BLUR_DISPATCHER = Executors.newFixedThreadPool(WORKER_THREADS_COUNT).asCoroutineDispatcher() + CoroutineName("async_blur")
     private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(WORKER_THREADS_COUNT)
 
-    fun <T> submit(task: AsyncBlurTask<T>): Future<*> {
-        return ASYNC_BLUR_EXECUTOR.submit(task)
+    fun submit(block: suspend CoroutineScope.() -> Unit) {
+        CoroutineScope(ASYNC_BLUR_DISPATCHER).launch {
+            block()
+        }
     }
 
     fun invokeAll(tasks: Collection<BlurSubTask>) {

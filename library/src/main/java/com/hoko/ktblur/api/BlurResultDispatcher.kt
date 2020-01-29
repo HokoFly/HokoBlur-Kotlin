@@ -2,5 +2,5 @@ package com.hoko.ktblur.api
 
 interface BlurResultDispatcher {
 
-    fun dispatch(runnable: Runnable)
+    suspend fun dispatch(block: () -> Unit)
 }

@@ -6,7 +6,6 @@ import android.view.View
 import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.params.Scheme
 import com.hoko.ktblur.task.AsyncBlurTask
-import java.util.concurrent.Future
 
 interface BlurBuild {
 
@@ -36,8 +35,8 @@ interface BlurBuild {
 
     fun blur(view: View): Bitmap
 
-    fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) : Future<*>
+    fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit)
 
-    fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) : Future<*>
+    fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit)
 
 }

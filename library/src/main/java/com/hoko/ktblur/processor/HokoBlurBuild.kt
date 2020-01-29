@@ -10,7 +10,6 @@ import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.params.Scheme
 import com.hoko.ktblur.task.AndroidBlurResultDispatcher
 import com.hoko.ktblur.task.AsyncBlurTask
-import java.util.concurrent.Future
 
 class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var radius: Int = 10
@@ -85,11 +84,11 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
         return processor().blur(view)
     }
 
-    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) : Future<*> {
+    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) {
         return processor().asyncBlur(bitmap, block)
     }
 
-    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) : Future<*> {
+    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) {
         return processor().asyncBlur(view, block)
     }
 }

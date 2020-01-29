@@ -13,7 +13,6 @@ import com.hoko.ktblur.task.AsyncBlurTask
 import com.hoko.ktblur.task.BitmapAsyncBlurTask
 import com.hoko.ktblur.task.BlurTaskManager
 import com.hoko.ktblur.task.ViewAsyncBlurTask
-import java.util.concurrent.Future
 
 abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
@@ -55,12 +54,12 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
 
-    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit): Future<*> {
-        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, block, bitmap, dispatcher))
+    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit) {
+        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, block, bitmap, dispatcher).action)
     }
 
-    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit): Future<*> {
-        return BlurTaskManager.submit(ViewAsyncBlurTask(this, block, view, dispatcher))
+    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit) {
+        return BlurTaskManager.submit(ViewAsyncBlurTask(this, block, view, dispatcher).action)
     }
 
     private fun checkParams() {
