@@ -48,17 +48,16 @@ class EglBuffer {
         val w = bitmap.width
         val h = bitmap.height
 
-        try {
+        kotlin.runCatching {
             val eglSurface = createSurface(w, h)
             getRenderer().onDrawFrame(bitmap)
             egl.eglSwapBuffers(eglDisplay, eglSurface)
             convertToBitmap(bitmap)
-        } catch (t: Throwable) {
+        }.onFailure { t ->
             Log.e(TAG, "Blur the bitmap error", t)
-        } finally {
+        }.also {
             unbindEglCurrent()
         }
-
         return bitmap
     }
 

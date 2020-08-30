@@ -14,7 +14,7 @@ object BlurTaskManager {
     private val ASYNC_BLUR_DISPATCHER = Executors.newFixedThreadPool(WORKER_THREADS_COUNT).asCoroutineDispatcher() + CoroutineName("async_blur")
     private val PARALLEL_BLUR_EXECUTOR = Executors.newFixedThreadPool(WORKER_THREADS_COUNT)
 
-    fun submit(block: suspend CoroutineScope.() -> Unit) {
+    fun submit(block: suspend () -> Unit) {
         CoroutineScope(ASYNC_BLUR_DISPATCHER).launch {
             block()
         }

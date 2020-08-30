@@ -64,7 +64,6 @@ internal object BoxBlurFilter {
                 tr += (rgb1 and 0xff0000) - (rgb2 and 0xff0000) shr 16
                 tg += (rgb1 and 0xff00) - (rgb2 and 0xff00) shr 8
                 tb += (rgb1 and 0xff) - (rgb2 and 0xff)
-                //                outIndex += height;
             }
             inIndex += width
         }

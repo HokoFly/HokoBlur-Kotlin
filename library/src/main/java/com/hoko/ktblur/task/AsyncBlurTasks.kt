@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.view.View
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.BlurResultDispatcher
-import kotlinx.coroutines.CoroutineScope
 
 sealed class AsyncBlurTask<in T>(
     protected val blurProcessor: BlurProcessor,
@@ -12,23 +11,23 @@ sealed class AsyncBlurTask<in T>(
     private val target: T,
     private val dispatcher: BlurResultDispatcher
 ) {
-    val action: suspend CoroutineScope.() -> Unit = {
-        val callback = BlurCallback().apply {
+    val action: suspend () -> Unit = {
+        val callback = BlurCallbackDSL().apply {
             this.block()
         }
         val blurResult = BlurResult(callback)
 
-        try {
+        kotlin.runCatching {
             blurResult.apply {
                 bitmap = makeBlur(target)
                 success = true
             }
-        } catch (e: Throwable) {
+        }.onFailure { e ->
             blurResult.apply {
                 error = e
                 success = false
             }
-        } finally {
+        }.also {
             dispatcher.dispatch {
                 blurResult.run {
                     if (success) {

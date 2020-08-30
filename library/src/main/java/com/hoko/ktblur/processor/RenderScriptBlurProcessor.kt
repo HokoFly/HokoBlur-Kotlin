@@ -27,7 +27,7 @@ class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(
 
         val allocationIn = Allocation.createFromBitmap(renderScript, bitmap)
         val allocationOut = Allocation.createFromBitmap(renderScript, Bitmap.createBitmap(bitmap))
-        try {
+        kotlin.runCatching {
             when (mode) {
                 Mode.BOX -> {
                     doBoxBlur(bitmap, allocationIn, allocationOut)
@@ -42,14 +42,12 @@ class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(
                     allocationOut.copyTo(bitmap)
                 }
             }
-
-        } catch (e: Throwable) {
-            Log.e(TAG, "Blur the bitmap error", e)
-        } finally {
+        }.onFailure { t ->
+            Log.e(TAG, "Blur the bitmap error", t)
+        }.also {
             allocationIn.destroy()
             allocationOut.destroy()
         }
-
         return bitmap
 
     }

@@ -6,6 +6,7 @@ import com.hoko.ktblur.util.SingleMainHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
@@ -14,6 +15,7 @@ class AndroidBlurResultDispatcher (handler: Handler) : BlurResultDispatcher {
         internal val MAIN_THREAD_DISPATCHER : BlurResultDispatcher by lazy { AndroidBlurResultDispatcher(SingleMainHandler.get()) }
     }
 
+    //also handler.asCoroutineDispatcher()
     private val coroutineContext = object : CoroutineDispatcher() {
         override fun dispatch(context: CoroutineContext, block: Runnable) {
             handler.post(block)
