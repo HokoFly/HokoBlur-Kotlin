@@ -10,7 +10,7 @@ class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Prog
         private val TAG = SimpleProgram::class.java.simpleName
     }
 
-    private var id: Int = 0
+    override var id: Int = 0
 
     init {
         create(vertexShaderCode, fragmentShaderCode)
@@ -38,7 +38,6 @@ class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Prog
                     GLES20.glDeleteProgram(id)
                     id = 0
                 }
-                //
             }
         } finally {
             GLES20.glDetachShader(id, vertexShader)
@@ -73,9 +72,5 @@ class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Prog
             GLES20.glUseProgram(0)
             GLES20.glDeleteProgram(id)
         }
-    }
-
-    override fun id(): Int {
-        return id
     }
 }

@@ -9,8 +9,8 @@ class OpenGLBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builde
 
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         check(!bitmap.isRecycled)
-        eglBuffer.setBlurMode(mode)
-        eglBuffer.setBlurRadius(radius)
+        eglBuffer.blurMode = mode
+        eglBuffer.blurRadius = radius
         return eglBuffer.getBlurBitmap(bitmap)
     }
 

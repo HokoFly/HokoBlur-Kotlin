@@ -11,7 +11,7 @@ object TextureCache {
         }
 
         override fun checkHit(key: Size, value: Texture): Boolean {
-            return key.width == value.width() && key.height == value.height()
+            return key.width == value.width && key.height == value.height
         }
 
         override fun entryDeleted(removed: Texture) {

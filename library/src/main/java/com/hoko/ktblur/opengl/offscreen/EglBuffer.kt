@@ -18,6 +18,18 @@ class EglBuffer {
         private const val EGL_OPENGL_ES2_BIT: Int = 4
     }
 
+    var blurMode: Mode
+        get() = getRenderer().mode
+        set(value) {
+            getRenderer().mode = value
+        }
+
+    var blurRadius: Int
+        get() = getRenderer().radius
+        set(value) {
+            getRenderer().radius = value
+        }
+
     private val egl: EGL10 by lazy { EGLContext.getEGL() as EGL10 }
     private val eglDisplay: EGLDisplay by lazy { egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY) }
     private val eglConfigs: Array<EGLConfig?> = arrayOfNulls(1)
@@ -103,18 +115,7 @@ class EglBuffer {
         }
     }
 
-
-    fun setBlurRadius(radius: Int) {
-        getRenderer().radius = radius
-    }
-
-    fun setBlurMode(mode: Mode) {
-        getRenderer().mode = mode
-    }
-
     fun free() {
         getRenderer().free()
     }
-
-
 }
