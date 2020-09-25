@@ -11,7 +11,7 @@ sealed class AsyncBlurTask<in T>(
     private val target: T,
     private val dispatcher: BlurResultDispatcher
 ) {
-    val action: suspend () -> Unit = {
+    fun suspendAction(): suspend () -> Unit = {
         val callback = BlurCallbackDSL().apply {
             this.block()
         }

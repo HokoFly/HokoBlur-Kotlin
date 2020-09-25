@@ -6,6 +6,7 @@ import com.hoko.ktblur.params.Direction
 import com.hoko.ktblur.params.Scheme
 import com.hoko.ktblur.task.BlurSubTask
 import com.hoko.ktblur.task.BlurTaskManager
+import kotlinx.coroutines.*
 
 class NativeBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
 

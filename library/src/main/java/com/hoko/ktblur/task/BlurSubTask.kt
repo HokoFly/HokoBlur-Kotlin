@@ -16,9 +16,9 @@ class BlurSubTask(
     private val index: Int,
     private val cores: Int,
     private val direction: Direction
-) : Callable<Unit> {
+) : Runnable {
 
-    override fun call() {
+    override fun run() {
         check(!bitmapOut.isRecycled)
         require(cores > 0)
         applyPixelsBlur()
