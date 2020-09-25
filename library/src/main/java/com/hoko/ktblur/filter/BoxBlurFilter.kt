@@ -7,7 +7,6 @@ internal object BoxBlurFilter {
 
     fun doBlur(data: IntArray, width: Int, height: Int, radius: Int, direction: Direction) {
         val result = IntArray(width * height)
-
         when (direction) {
             Direction.HORIZONTAL -> {
                 blurHorizontal(data, result, width, height, radius)

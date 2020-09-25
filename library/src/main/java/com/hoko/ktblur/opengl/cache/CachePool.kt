@@ -57,7 +57,7 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
 
 
     private fun trimToSize(maxSize: Int) {
-        val removedCollection = ArrayList<V>()
+        val removedCollection = mutableListOf<V>()
         synchronized(this) {
             while(internalCache.size > maxSize && internalCache.isNotEmpty()) {
                 internalCache.removeAt(0)?.let {removed ->
@@ -78,6 +78,5 @@ abstract class CachePool<in K, V>(private val maxSize: Int) {
     fun evictAll() {
         trimToSize(-1)
     }
-
 
 }

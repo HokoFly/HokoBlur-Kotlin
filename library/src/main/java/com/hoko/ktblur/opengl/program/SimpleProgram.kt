@@ -22,9 +22,7 @@ class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Prog
         try {
             vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
             fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
-
             check(vertexShader != 0 && fragmentShader != 0)
-
             id = GLES20.glCreateProgram()
             if (id != 0) {
                 GLES20.glAttachShader(id, vertexShader)
@@ -54,7 +52,6 @@ class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Prog
         if (shader != 0) {
             GLES20.glShaderSource(shader, shaderCode)
             GLES20.glCompileShader(shader)
-
             val compiled = IntArray(1)
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0)
             if (compiled[0] == 0) {

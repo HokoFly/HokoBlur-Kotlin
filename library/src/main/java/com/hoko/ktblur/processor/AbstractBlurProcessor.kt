@@ -31,25 +31,19 @@ abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
     }
 
     override fun blur(view: View): Bitmap {
-        return realBlur(
-            view.getBitmap(translateX, translateY, sampleFactor),
-            true
-        ).scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
+        return realBlur(view.getBitmap(translateX, translateY, sampleFactor), true)
+            .scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
     }
 
     private fun blur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         checkParams()
-
         val inBitmap = if (forceCopy) {
             bitmap.copy(bitmap.config, true)
         } else {
             bitmap
         }
-
         val scaledBitmap = inBitmap.translate(translateX, translateY).scale(sampleFactor)
-
         return realBlur(scaledBitmap, parallel).scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
-
     }
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap

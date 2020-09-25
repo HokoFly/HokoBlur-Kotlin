@@ -7,7 +7,6 @@ fun Bitmap.scale(factor: Float): Bitmap {
     if (factor == 1.0f) {
         return this
     }
-
     val ratio = 1f / factor
     val matrix = Matrix().apply {
         postScale(ratio, ratio)

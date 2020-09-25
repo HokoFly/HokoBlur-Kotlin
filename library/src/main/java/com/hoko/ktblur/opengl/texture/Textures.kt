@@ -12,11 +12,8 @@ sealed class AbstractTexture(override val width: Int, override val height: Int) 
 
     override fun create() {
         val textureIds = IntArray(1)
-
         GLES20.glGenTextures(1, textureIds, 0)
-
         id = textureIds[0]
-
         if (id != 0) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
@@ -25,7 +22,6 @@ sealed class AbstractTexture(override val width: Int, override val height: Int) 
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST.toFloat())
             onTextureCreated()
         }
-
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0)
     }
 
@@ -49,7 +45,6 @@ class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.heigh
 
     override fun onTextureCreated() {
         check(width > 0 && height > 0)
-
         val bitmap = bitmapWeakRef.get()
         if (bitmap != null && !(bitmap.isRecycled)) {
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
@@ -66,7 +61,6 @@ class SimpleTexture(width: Int, height: Int) : AbstractTexture(width, height) {
 
     override fun onTextureCreated() {
         check(width > 0 && height > 0)
-
         GLES20.glTexImage2D(
             GLES20.GL_TEXTURE_2D,
             0,

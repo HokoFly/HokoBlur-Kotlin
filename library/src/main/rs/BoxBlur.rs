@@ -21,7 +21,7 @@ void __attribute__((kernel)) boxblur_h(uchar4 in, uint32_t x, uint32_t y) {
     uchar4 center = rsGetElementAt_uchar4(input, x, y);
 
     for (int j = -radius; j <= radius; j++) {
-        if (x >= 0 && x < width && y + j >= 0 && y + j < height) {
+        if (x < width && y + j < height) {
             uchar4 temp = rsGetElementAt_uchar4(input, x, y + j);
             sum += rsUnpackColor8888(temp);
             count++;
@@ -49,7 +49,7 @@ void __attribute__((kernel)) boxblur_v(uchar4 in, uint32_t x, uint32_t y) {
     uchar4 center = rsGetElementAt_uchar4(input, x, y);
 
     for (int i = -radius; i <= radius; i++) {
-        if (x + i >= 0 && x + i < width && y >= 0 && y < height) {
+        if (x + i < width && y < height) {
             uchar4 temp = rsGetElementAt_uchar4(input, x + i, y);
             sum += rsUnpackColor8888(temp);
             count++;

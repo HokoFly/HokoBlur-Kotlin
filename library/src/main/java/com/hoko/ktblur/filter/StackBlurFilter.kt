@@ -7,7 +7,6 @@ import kotlin.math.min
 
 internal object StackBlurFilter {
     fun doBlur(pix: IntArray, w: Int, h: Int, radius: Int, direction: Direction) {
-
         when (direction) {
             Direction.HORIZONTAL -> blurHorizontal(pix, w, h, radius)
             Direction.VERTICAL -> blurVertical(pix, w, h, radius)
@@ -16,7 +15,6 @@ internal object StackBlurFilter {
                 blurVertical(pix, w, h, radius)
             }
         }
-
     }
 
     private fun blurHorizontal(pix: IntArray, w: Int, h: Int, radius: Int) {
@@ -291,6 +289,4 @@ internal object StackBlurFilter {
             x++
         }
     }
-
-
 }

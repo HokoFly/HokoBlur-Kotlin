@@ -75,8 +75,8 @@ class EglBuffer {
 
     private fun createSurface(width: Int, height: Int): EGLSurface {
         val surfaceAttrs = intArrayOf(EGL10.EGL_WIDTH, width, EGL10.EGL_HEIGHT, height, EGL10.EGL_NONE)
-        return egl.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs).also {
-            egl.eglMakeCurrent(eglDisplay, it, it, getEGLContext())
+        return egl.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs).apply {
+            egl.eglMakeCurrent(eglDisplay, this, this, getEGLContext())
         }
     }
 
@@ -84,11 +84,9 @@ class EglBuffer {
     private fun convertToBitmap(bitmap: Bitmap) {
         val w = bitmap.width
         val h = bitmap.height
-
         val ib = IntBuffer.allocate(w * h)
         GLES20.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, ib)
         val ia = ib.array()
-
         bitmap.copyPixelsFromBuffer(IntBuffer.wrap(ia))
     }
 
@@ -103,15 +101,15 @@ class EglBuffer {
 
     private fun getRenderer(): OffScreenBlurRenderer {
         val renderer = threadRenderer.get()
-        return renderer ?: OffScreenBlurRenderer().also {
-            threadRenderer.set(it)
+        return renderer ?: OffScreenBlurRenderer().apply {
+            threadRenderer.set(this)
         }
     }
 
     private fun getEGLContext(): EGLContext? {
         val eglContext = threadEGLContext.get()
-        return eglContext ?: egl.eglCreateContext(eglDisplay, eglConfigs[0], EGL10.EGL_NO_CONTEXT, contextAttrs).also {
-            threadEGLContext.set(it)
+        return eglContext ?: egl.eglCreateContext(eglDisplay, eglConfigs[0], EGL10.EGL_NO_CONTEXT, contextAttrs).apply {
+            threadEGLContext.set(this)
         }
     }
 

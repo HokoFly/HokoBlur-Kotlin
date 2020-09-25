@@ -7,7 +7,6 @@ class TextureFactory {
     companion object {
         fun create(width: Int, height: Int): Texture {
             require(width > 0 && height > 0)
-
             return SimpleTexture(width, height)
         }
 

@@ -24,7 +24,7 @@ void __attribute__((kernel)) stackblur_h(uchar4 in, uint32_t x, uint32_t y) {
     uchar4 center = rsGetElementAt_uchar4(input, x, y);
 
     for (int i = -radius; i <= radius; i++) {
-        if (x + i >= 0 && x + i < width) {
+        if (x + i < width) {
             uchar4 temp = rsGetElementAt_uchar4(input, x + i, y);
             int weight = radius + 1 - abs(i);
             sum += rsUnpackColor8888(temp) * weight;
@@ -51,7 +51,7 @@ void __attribute__((kernel)) stackblur_v(uchar4 in, uint32_t x, uint32_t y) {
     uchar4 center = rsGetElementAt_uchar4(input, x, y);
 
     for (int j = -radius; j <= radius; j++) {
-        if (y + j >= 0 && y + j < height) {
+        if (y + j < height) {
             uchar4 temp = rsGetElementAt_uchar4(input, x, y + j);
             int weight = radius + 1 - abs(j);
             sum += rsUnpackColor8888(temp) * weight;

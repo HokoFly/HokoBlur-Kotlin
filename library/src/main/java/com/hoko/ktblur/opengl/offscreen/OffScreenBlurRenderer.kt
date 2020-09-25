@@ -96,7 +96,6 @@ class OffScreenBlurRenderer : Render<Bitmap> {
             return
         }
         check(t.width > 0 && t.height > 0)
-
         var blurContext: BlurContext? = null
         try {
             blurContext = prepare(t)
@@ -104,7 +103,6 @@ class OffScreenBlurRenderer : Render<Bitmap> {
         } finally {
             onPostBlur(blurContext)
         }
-
     }
 
     private fun prepare(bitmap: Bitmap): BlurContext {
@@ -112,16 +110,13 @@ class OffScreenBlurRenderer : Render<Bitmap> {
         check(context !== EGL10.EGL_NO_CONTEXT) {
             "This thread has no EGLContext."
         }
-
         if (needRelink || !this::mProgram.isInitialized) {
             deletePrograms()
             mProgram = ProgramFactory.create(vertexShaderCode, getFragmentShaderCode(mode))
             needRelink = false
         }
-
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glViewport(0, 0, bitmap.width, bitmap.height)
-
         return BlurContext(bitmap)
 
     }
@@ -134,9 +129,7 @@ class OffScreenBlurRenderer : Render<Bitmap> {
     private fun drawOneDimenBlur(blurContext: BlurContext, isHorizontal: Boolean) {
         try {
             val p = mProgram
-
             GLES20.glUseProgram(p.id)
-
             val positionId = GLES20.glGetAttribLocation(p.id, "aPosition")
             GLES20.glEnableVertexAttribArray(positionId)
             GLES20.glVertexAttribPointer(
@@ -147,15 +140,12 @@ class OffScreenBlurRenderer : Render<Bitmap> {
                 VERTEX_STRIDE,
                 vertexBuffer
             )
-
             val texCoordId = GLES20.glGetAttribLocation(p.id, "aTexCoord")
             GLES20.glEnableVertexAttribArray(texCoordId)
             GLES20.glVertexAttribPointer(texCoordId, 2, GLES20.GL_FLOAT, false, 0, texCoordBuffer)
-
             if (isHorizontal) {
                 blurContext.blurFrameBuffer.bindSelf()
             }
-
             val textureUniformId = GLES20.glGetUniformLocation(p.id, "uTexture")
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
             GLES20.glBindTexture(
@@ -163,16 +153,13 @@ class OffScreenBlurRenderer : Render<Bitmap> {
                 if (isHorizontal) blurContext.inputTexture.id else blurContext.horizontalTexture.id
             )
             GLES20.glUniform1i(textureUniformId, 0)
-
             val radiusId = GLES20.glGetUniformLocation(p.id, "uRadius")
             val widthOffsetId = GLES20.glGetUniformLocation(p.id, "uWidthOffset")
             val heightOffsetId = GLES20.glGetUniformLocation(p.id, "uHeightOffset")
             GLES20.glUniform1i(radiusId, radius)
             GLES20.glUniform1f(widthOffsetId, if (isHorizontal) 0f else 1f / blurContext.bitmap.width)
             GLES20.glUniform1f(heightOffsetId, if (isHorizontal) 1f / blurContext.bitmap.height else 0f)
-
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.size, GLES20.GL_UNSIGNED_SHORT, drawListBuffer)
-
             if (!isHorizontal) {
                 GLES20.glDisableVertexAttribArray(positionId)
                 GLES20.glDisableVertexAttribArray(texCoordId)

@@ -7,10 +7,8 @@ import kotlin.math.exp
 internal object GaussianBlurFilter {
 
     fun doBlur(data: IntArray, width: Int, height: Int, radius: Int, direction: Direction) {
-
         val result = IntArray(width * height)
         val kernel = makeKernel(radius)
-
         when (direction) {
             Direction.HORIZONTAL -> {
                 gaussianBlurHorizontal(kernel, data, result, width, height)
@@ -19,7 +17,6 @@ internal object GaussianBlurFilter {
             Direction.VERTICAL -> {
                 gaussianBlurVertical(kernel, data, result, width, height)
                 result.copyInto(data, 0, 0, result.size)
-
             }
             else -> {
                 gaussianBlurHorizontal(kernel, data, result, width, height)
@@ -30,11 +27,9 @@ internal object GaussianBlurFilter {
 
     private fun gaussianBlurHorizontal(
         kernel: FloatArray, inPixels: IntArray,
-        outPixels: IntArray, width: Int, height: Int
-    ) {
+        outPixels: IntArray, width: Int, height: Int) {
         val cols = kernel.size
         val cols2 = cols / 2
-
         for (y in 0 until height) {
             val ioffset = y * width
             for (x in 0 until width) {
@@ -43,7 +38,6 @@ internal object GaussianBlurFilter {
                 var b = 0f
                 for (col in -cols2..cols2) {
                     val f = kernel[cols2 + col]
-
                     if (f != 0f) {
                         var ix = x + col
                         if (ix < 0) {
@@ -69,8 +63,7 @@ internal object GaussianBlurFilter {
 
     private fun gaussianBlurVertical(
         kernel: FloatArray, inPixels: IntArray,
-        outPixels: IntArray, width: Int, height: Int
-    ) {
+        outPixels: IntArray, width: Int, height: Int) {
         val cols = kernel.size
         val cols2 = cols / 2
         for (x in 0 until width) {
@@ -80,7 +73,6 @@ internal object GaussianBlurFilter {
                 var b = 0f
                 for (col in -cols2..cols2) {
                     val f = kernel[cols2 + col]
-
                     if (f != 0f) {
                         var iy = y + col
                         if (iy < 0) {
@@ -120,9 +112,6 @@ internal object GaussianBlurFilter {
         for (i in 0 until rows) {
             matrix[i] /= total
         }
-
         return matrix
     }
-
-
 }

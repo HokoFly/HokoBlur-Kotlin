@@ -3,7 +3,7 @@ package com.hoko.ktblur.demo
 import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.hoko.ktblur.view.DragBlurringView
+import com.hoko.ktblur.demo.view.DragBlurringView
 
 
 class DynamicBlurActivity : AppCompatActivity() {
