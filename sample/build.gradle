@@ -3,16 +3,16 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion CompileConfig.compileSdkVersion
     defaultConfig {
         applicationId "com.hoko.ktblur.demo"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        buildToolsVersion rootProject.ext.buildToolsVersion
+        minSdkVersion CompileConfig.minSdkVersion
+        targetSdkVersion CompileConfig.targetSdkVersion
+        buildToolsVersion CompileConfig.buildToolsVersion
+        renderscriptTargetApi CompileConfig.renderscriptTargetApi
+        renderscriptSupportModeEnabled CompileConfig.renderscriptSupportModeEnabled
         versionCode 1
         versionName "1.0"
-        renderscriptTargetApi rootProject.ext.renderscriptTargetApi
-        renderscriptSupportModeEnabled rootProject.ext.renderscriptSupportModeEnabled
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -32,8 +32,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation Deps.kotlinStdlib
+    implementation Deps.kotlinCoroutine
+    implementation Deps.appcompat
     implementation project(':library')
 }
