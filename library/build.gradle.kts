@@ -31,6 +31,7 @@ android {
         }
         val abiFilters = if (isReleaseBuildType) arrayOf("armeabi-v7a", "arm64-v8a") else arrayOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         externalNativeBuild.cmake.abiFilters(*abiFilters)
+        consumerProguardFiles("proguard-rules.pro")
     }
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_1_8)
@@ -43,7 +44,6 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
 
         getByName("debug") {
