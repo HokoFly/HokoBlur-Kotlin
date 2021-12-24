@@ -16,15 +16,13 @@ gradle.startParameter.taskNames.forEach {
 }
 
 android {
-    compileSdkVersion(CompileConfig.compileSdkVersion)
+    compileSdk = CompileConfig.compileSdkVersion
     defaultConfig {
-        minSdkVersion(CompileConfig.minSdkVersion)
-        targetSdkVersion(CompileConfig.targetSdkVersion)
-        buildToolsVersion(CompileConfig.buildToolsVersion)
+        minSdk = CompileConfig.minSdkVersion
+        targetSdk = CompileConfig.targetSdkVersion
+        buildToolsVersion = CompileConfig.buildToolsVersion
         renderscriptTargetApi = CompileConfig.renderscriptTargetApi
-        renderscriptSupportModeEnabled(CompileConfig.renderscriptSupportModeEnabled)
-        versionCode(1)
-        versionName("1.0")
+        renderscriptSupportModeEnabled = CompileConfig.renderscriptSupportModeEnabled
         externalNativeBuild {
             cmake {
                 arguments("-DANDROID_PLATFORM=android-13", "-DANDROID_TOOLCHAIN=clang")
@@ -44,8 +42,12 @@ android {
 
     buildTypes {
         getByName("release") {
-            minifyEnabled(false)
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+
+        getByName("debug") {
+            isJniDebuggable = true
         }
     }
     externalNativeBuild {

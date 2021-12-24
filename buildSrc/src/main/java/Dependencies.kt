@@ -5,18 +5,18 @@ import Versions.kotlinVersion
 
 object CompileConfig {
     const val minSdkVersion = 16
-    const val compileSdkVersion = 28
-    const val targetSdkVersion = 28
-    const val buildToolsVersion = "29.0.3"
-    const val renderscriptTargetApi = 28
+    const val compileSdkVersion = 32
+    const val targetSdkVersion = 32
+    const val buildToolsVersion = "32.0.0"
+    const val renderscriptTargetApi = 31
     const val renderscriptSupportModeEnabled = true
 }
 
 internal object Versions {
     const val kotlinVersion = "1.5.10"
     const val coroutineVersion = "1.3.2"
-    const val appcompatVersion = "1.3.0"
-    const val AGPVersion = "4.2.1"
+    const val appcompatVersion = "1.4.0"
+    const val AGPVersion = "7.0.4"
 }
 
 object Deps {

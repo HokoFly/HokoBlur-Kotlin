@@ -97,7 +97,7 @@ class RsBlurLinearLayout : LinearLayout {
         with(mCanvas) {
             restoreToCount(1)
             setBitmap(mBitmap)
-            matrix = Matrix()
+            setMatrix(Matrix())
             translate((-mLocationInWindow[0]).toFloat(), (-mLocationInWindow[1]).toFloat())
             save()
         }
