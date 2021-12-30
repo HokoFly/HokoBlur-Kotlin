@@ -20,4 +20,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class androidx.renderscript.** { *; }
--keep class com.hoko.blur.opengl.functor.** { *; }
