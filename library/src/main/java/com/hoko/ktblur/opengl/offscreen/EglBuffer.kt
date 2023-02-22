@@ -32,6 +32,7 @@ class EglBuffer {
 
     private val egl: EGL10 by lazy { EGLContext.getEGL() as EGL10 }
     private val eglDisplay: EGLDisplay by lazy { egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY) }
+    private var eglSurface: EGLSurface? = null
     private val eglConfigs: Array<EGLConfig?> = arrayOfNulls(1)
     private val contextAttrs: IntArray by lazy { intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE) }
     //EGLContext、EGLSurface and Renderer are bound to current thread.
@@ -61,14 +62,14 @@ class EglBuffer {
         val h = bitmap.height
 
         kotlin.runCatching {
-            val eglSurface = createSurface(w, h)
+            eglSurface = createSurface(w, h)
             getRenderer().onDrawFrame(bitmap)
             egl.eglSwapBuffers(eglDisplay, eglSurface)
             convertToBitmap(bitmap)
         }.onFailure { t ->
             Log.e(TAG, "Blur the bitmap error", t)
         }.also {
-            unbindEglCurrent()
+            destroyEglSurface()
         }
         return bitmap
     }
@@ -95,8 +96,11 @@ class EglBuffer {
      * Then the EGLContext could be reused for other threads. Make it possible to share the EGLContext
      * To bind the EGLContext to current Thread, just call eglMakeCurrent()
      */
-    private fun unbindEglCurrent() {
+    private fun destroyEglSurface() {
         egl.eglMakeCurrent(eglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT)
+        eglSurface?.run {
+            egl.eglDestroySurface(eglDisplay, this)
+        }
     }
 
     private fun getRenderer(): OffScreenBlurRenderer {
@@ -115,5 +119,9 @@ class EglBuffer {
 
     fun free() {
         getRenderer().free()
+        threadEGLContext.get()?.run {
+            egl.eglDestroyContext(eglDisplay, this)
+        }
+        threadEGLContext.set(null)
     }
 }
