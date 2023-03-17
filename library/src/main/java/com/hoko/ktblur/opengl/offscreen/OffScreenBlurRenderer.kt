@@ -62,7 +62,10 @@ class OffScreenBlurRenderer : Render<Bitmap> {
     internal var radius: Int = 0
     internal var mode: Mode = Mode.STACK
         set(mode) {
-            needRelink = true
+            if (field != mode) {
+                needRelink = true
+                deletePrograms()
+            }
             field = mode
         }
 
@@ -181,18 +184,18 @@ class OffScreenBlurRenderer : Render<Bitmap> {
 
     private fun onPostBlur(blurContext: BlurContext?) {
         blurContext?.finish()
+        vertexBuffer.clear()
+        texCoordBuffer.clear()
+        drawListBuffer.clear()
+        deletePrograms()
     }
 
 
     private fun deletePrograms() {
+        needRelink = true
         if (this::mProgram.isInitialized) {
             mProgram.delete()
         }
-    }
-
-    fun free() {
-        needRelink = true
-        deletePrograms()
     }
 
     private class BlurContext(val bitmap: Bitmap) {

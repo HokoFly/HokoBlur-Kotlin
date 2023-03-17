@@ -6,7 +6,7 @@ import com.hoko.ktblur.opengl.framebuffer.FrameBufferFactory
 object FrameBufferCache {
     val sDisplayFrameBuffer: FrameBuffer by lazy { FrameBufferFactory.getDisplayFrameBuffer() }
 
-    private val cachePool = object : CachePool<Any, FrameBuffer>() {
+    private val cachePool = object : CachePool<Any, FrameBuffer>(32) {
         override fun create(key: Any): FrameBuffer {
             return FrameBufferFactory.create()
         }

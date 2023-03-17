@@ -16,32 +16,8 @@ class EglBuffer {
         private val TAG = EglBuffer::class.java.simpleName
         private const val EGL_CONTEXT_CLIENT_VERSION: Int = 0x3098
         private const val EGL_OPENGL_ES2_BIT: Int = 4
-    }
-
-    var blurMode: Mode
-        get() = getRenderer().mode
-        set(value) {
-            getRenderer().mode = value
-        }
-
-    var blurRadius: Int
-        get() = getRenderer().radius
-        set(value) {
-            getRenderer().radius = value
-        }
-
-    private val egl: EGL10 by lazy { EGLContext.getEGL() as EGL10 }
-    private val eglDisplay: EGLDisplay by lazy { egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY) }
-    private var eglSurface: EGLSurface? = null
-    private val eglConfigs: Array<EGLConfig?> = arrayOfNulls(1)
-    private val contextAttrs: IntArray by lazy { intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE) }
-    //EGLContext、EGLSurface and Renderer are bound to current thread.
-    // So here use the ThreadLocal to implement Thread isolation.
-    private val threadRenderer by lazy { ThreadLocal<OffScreenBlurRenderer>() }
-    private val threadEGLContext by lazy { ThreadLocal<EGLContext>() }
-
-    init {
-        val configAttrs = intArrayOf(
+        private val EGL: EGL10 = EGLContext.getEGL() as EGL10
+        private val CONFIG_ATTRIB_LIST = intArrayOf(
             EGL10.EGL_BUFFER_SIZE, 32,
             EGL10.EGL_ALPHA_SIZE, 8,
             EGL10.EGL_BLUE_SIZE, 8,
@@ -51,36 +27,35 @@ class EglBuffer {
             EGL10.EGL_SURFACE_TYPE, EGL10.EGL_PBUFFER_BIT,
             EGL10.EGL_NONE
         )
-        egl.apply {
-            eglInitialize(eglDisplay, IntArray(2))
-            eglChooseConfig(eglDisplay, configAttrs, eglConfigs, 1, IntArray(1))
-        }
+        private val CONTEXT_ATTRIB_LIST: IntArray = intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE)
+
+
     }
 
-    fun getBlurBitmap(bitmap: Bitmap): Bitmap {
+    fun getBlurBitmap(bitmap: Bitmap, radius: Int, mode: Mode): Bitmap {
         val w = bitmap.width
         val h = bitmap.height
-
+        var eglDisplay = EGL10.EGL_NO_DISPLAY
+        var eglSurface: EGLSurface? = null
+        var eglContext: EGLContext? = null
+        val eglConfigs = arrayOfNulls<EGLConfig>(1)
         kotlin.runCatching {
-            eglSurface = createSurface(w, h)
-            getRenderer().onDrawFrame(bitmap)
-            egl.eglSwapBuffers(eglDisplay, eglSurface)
+            eglDisplay = createDisplay(eglConfigs)
+            eglSurface = createSurface(w, h, eglDisplay, eglConfigs)
+            eglContext = createEGLContext(eglDisplay, eglConfigs)
+            EGL.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
+            val renderer = createRenderer(radius, mode)
+            renderer.onDrawFrame(bitmap)
+            EGL.eglSwapBuffers(eglDisplay, eglSurface)
             convertToBitmap(bitmap)
         }.onFailure { t ->
             Log.e(TAG, "Blur the bitmap error", t)
         }.also {
-            destroyEglSurface()
+            destroyEglSurface(eglDisplay, eglSurface)
+            destroyEglContext(eglDisplay, eglContext)
         }
         return bitmap
     }
-
-    private fun createSurface(width: Int, height: Int): EGLSurface {
-        val surfaceAttrs = intArrayOf(EGL10.EGL_WIDTH, width, EGL10.EGL_HEIGHT, height, EGL10.EGL_NONE)
-        return egl.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs).apply {
-            egl.eglMakeCurrent(eglDisplay, this, this, getEGLContext())
-        }
-    }
-
 
     private fun convertToBitmap(bitmap: Bitmap) {
         val w = bitmap.width
@@ -91,37 +66,57 @@ class EglBuffer {
         bitmap.copyPixelsFromBuffer(IntBuffer.wrap(ia))
     }
 
-    /**
-     * When the current thread finish renderring and reading pixels, the EGLContext should be unbound.
-     * Then the EGLContext could be reused for other threads. Make it possible to share the EGLContext
-     * To bind the EGLContext to current Thread, just call eglMakeCurrent()
-     */
-    private fun destroyEglSurface() {
-        egl.eglMakeCurrent(eglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT)
-        eglSurface?.run {
-            egl.eglDestroySurface(eglDisplay, this)
+    private fun createDisplay(eglConfigs: Array<EGLConfig?>): EGLDisplay? {
+        val eglDisplay = EGL.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY)
+        EGL.eglInitialize(eglDisplay, IntArray(2))
+        EGL.eglChooseConfig(eglDisplay, CONFIG_ATTRIB_LIST, eglConfigs, 1, IntArray(1))
+        return eglDisplay
+    }
+
+    private fun createSurface(
+        width: Int,
+        height: Int,
+        eglDisplay: EGLDisplay,
+        eglConfigs: Array<EGLConfig?>
+    ): EGLSurface? {
+        val surfaceAttrs = intArrayOf(
+            EGL10.EGL_WIDTH, width,
+            EGL10.EGL_HEIGHT, height,
+            EGL10.EGL_NONE
+        )
+        return EGL.eglCreatePbufferSurface(eglDisplay, eglConfigs[0], surfaceAttrs)
+    }
+
+    private fun destroyEglSurface(eglDisplay: EGLDisplay, eglSurface: EGLSurface?) {
+        EGL.eglMakeCurrent(
+            eglDisplay,
+            EGL10.EGL_NO_SURFACE,
+            EGL10.EGL_NO_SURFACE,
+            EGL10.EGL_NO_CONTEXT
+        )
+        if (eglSurface != null) {
+            EGL.eglDestroySurface(eglDisplay, eglSurface)
         }
     }
 
-    private fun getRenderer(): OffScreenBlurRenderer {
-        val renderer = threadRenderer.get()
-        return renderer ?: OffScreenBlurRenderer().apply {
-            threadRenderer.set(this)
-        }
+    private fun createEGLContext(
+        eglDisplay: EGLDisplay,
+        eglConfigs: Array<EGLConfig?>
+    ): EGLContext? {
+        return EGL.eglCreateContext(
+            eglDisplay,
+            eglConfigs[0], EGL10.EGL_NO_CONTEXT, CONTEXT_ATTRIB_LIST
+        )
     }
 
-    private fun getEGLContext(): EGLContext? {
-        val eglContext = threadEGLContext.get()
-        return eglContext ?: egl.eglCreateContext(eglDisplay, eglConfigs[0], EGL10.EGL_NO_CONTEXT, contextAttrs).apply {
-            threadEGLContext.set(this)
-        }
+    private fun destroyEglContext(eglDisplay: EGLDisplay, eglContext: EGLContext?) {
+        EGL.eglDestroyContext(eglDisplay, eglContext)
     }
 
-    fun free() {
-        getRenderer().free()
-        threadEGLContext.get()?.run {
-            egl.eglDestroyContext(eglDisplay, this)
-        }
-        threadEGLContext.set(null)
+    private fun createRenderer(radius: Int, mode: Mode): OffScreenBlurRenderer {
+        val renderer = OffScreenBlurRenderer()
+        renderer.radius = radius
+        renderer.mode = mode
+        return renderer
     }
 }
