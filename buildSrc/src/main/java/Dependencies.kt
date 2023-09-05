@@ -2,25 +2,27 @@ import Versions.AGPVersion
 import Versions.appcompatVersion
 import Versions.coroutineVersion
 import Versions.kotlinVersion
+import org.gradle.api.JavaVersion
 
 object CompileConfig {
     const val minSdkVersion = 16
     const val compileSdkVersion = 32
     const val targetSdkVersion = 32
     const val buildToolsVersion = "32.0.0"
-    const val renderscriptTargetApi = 31
+    const val renderscriptTargetApi = 32
     const val renderscriptSupportModeEnabled = true
+    val javaVersion = JavaVersion.VERSION_11
+    const val jvmTarget = "11"
 }
 
 internal object Versions {
-    const val kotlinVersion = "1.5.10"
+    const val kotlinVersion = "1.6.21"
     const val coroutineVersion = "1.3.2"
     const val appcompatVersion = "1.4.0"
-    const val AGPVersion = "7.0.4"
+    const val AGPVersion = "7.4.2"
 }
 
 object Deps {
-    const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     const val kotlinCoroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
     const val appcompat = "androidx.appcompat:appcompat:$appcompatVersion"
 }

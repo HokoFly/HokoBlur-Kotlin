@@ -17,11 +17,11 @@ android {
         versionName = "1.0"
     }
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_1_8)
-        targetCompatibility(JavaVersion.VERSION_1_8)
+        sourceCompatibility(CompileConfig.javaVersion)
+        targetCompatibility(CompileConfig.javaVersion)
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = CompileConfig.jvmTarget
     }
     buildTypes {
         getByName("release") {
@@ -32,11 +32,11 @@ android {
             isJniDebuggable = true
         }
     }
+    namespace = "com.hoko.ktblur.demo"
 }
 
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to "*.jar"))
-    implementation(Deps.kotlinStdlib)
     implementation(Deps.kotlinCoroutine)
     implementation(Deps.appcompat)
     implementation(project(":library"))

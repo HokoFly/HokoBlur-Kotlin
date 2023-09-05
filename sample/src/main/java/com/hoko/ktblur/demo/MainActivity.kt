@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        supportActionBar?.hide()
         val multiBlurBtn = findViewById<Button>(R.id.multi_blur)
         val dynamicBtn = findViewById<Button>(R.id.dynamic_blur)
         val easyBlurBtn = findViewById<Button>(R.id.easy_blur)

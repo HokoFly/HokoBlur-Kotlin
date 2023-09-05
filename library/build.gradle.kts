@@ -34,11 +34,11 @@ android {
         consumerProguardFiles("proguard-rules.pro")
     }
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_1_8)
-        targetCompatibility(JavaVersion.VERSION_1_8)
+        sourceCompatibility(CompileConfig.javaVersion)
+        targetCompatibility(CompileConfig.javaVersion)
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = CompileConfig.jvmTarget
     }
 
     buildTypes {
@@ -55,11 +55,11 @@ android {
             path("src/main/cpp/CMakeLists.txt")
         }
     }
+    namespace = "com.hoko.ktblur"
 
 }
 
 dependencies {
     implementation(fileTree("dir" to "libs", "include" to "*.jar"))
-    implementation(Deps.kotlinStdlib)
     implementation(Deps.kotlinCoroutine)
 }
