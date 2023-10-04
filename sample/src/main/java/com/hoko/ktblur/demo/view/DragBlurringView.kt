@@ -48,7 +48,9 @@ class DragBlurringView : View {
                 toBlurBitmap?.eraseColor(Color.TRANSPARENT)
             }
 
-            blurredView.draw(blurringCanvas)
+            blurringCanvas?.run {
+                blurredView.draw(this)
+            }
             val blurredBitmap = toBlurBitmap?.let {
                 processor.blur(it)
             }

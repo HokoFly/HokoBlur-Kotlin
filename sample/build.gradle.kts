@@ -1,11 +1,10 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 android {
-    compileSdkVersion(CompileConfig.compileSdkVersion)
+    compileSdk = CompileConfig.compileSdkVersion
     defaultConfig {
         applicationId = "com.hoko.ktblur.demo"
         minSdk = CompileConfig.minSdkVersion

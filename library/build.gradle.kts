@@ -1,12 +1,11 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 var isReleaseBuildType = false
 gradle.startParameter.taskNames.forEach {
-    val taskNameL = it.toLowerCase()
+    val taskNameL = it.lowercase()
     if (taskNameL.contains("release")) {
         isReleaseBuildType = true
     }
