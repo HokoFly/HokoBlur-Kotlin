@@ -1,7 +1,7 @@
 package com.hoko.ktblur.processor
 
 import com.hoko.ktblur.api.BlurProcessor
-import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.api.Scheme
 
 internal class BlurProcessorFactory {
     companion object {

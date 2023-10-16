@@ -3,10 +3,9 @@ package com.hoko.ktblur.task
 import android.graphics.Bitmap
 import com.hoko.ktblur.filter.NativeBlurFilter
 import com.hoko.ktblur.filter.OriginBlurFilter
-import com.hoko.ktblur.params.Direction
-import com.hoko.ktblur.params.Mode
-import com.hoko.ktblur.params.Scheme
-import java.util.concurrent.Callable
+import com.hoko.ktblur.api.Direction
+import com.hoko.ktblur.api.Mode
+import com.hoko.ktblur.api.Scheme
 
 internal class BlurSubTask(
     private val scheme: Scheme,

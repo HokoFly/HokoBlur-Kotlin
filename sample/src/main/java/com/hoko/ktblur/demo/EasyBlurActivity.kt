@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.hoko.ktblur.HokoBlur
-import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.api.Scheme
 
 
 class EasyBlurActivity : AppCompatActivity() {

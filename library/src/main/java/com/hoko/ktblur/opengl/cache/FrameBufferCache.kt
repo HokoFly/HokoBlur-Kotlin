@@ -1,12 +1,11 @@
 package com.hoko.ktblur.opengl.cache
 
-import com.hoko.ktblur.api.FrameBuffer
-import com.hoko.ktblur.opengl.framebuffer.FrameBufferFactory
+import com.hoko.ktblur.opengl.FrameBuffer
 
 internal object FrameBufferCache {
     private val cachePool = object : CachePool<Unit, FrameBuffer>(32) {
         override fun create(key: Unit): FrameBuffer {
-            return FrameBufferFactory.create()
+            return FrameBuffer.create()
         }
 
         override fun checkHit(key: Unit, value: FrameBuffer): Boolean {

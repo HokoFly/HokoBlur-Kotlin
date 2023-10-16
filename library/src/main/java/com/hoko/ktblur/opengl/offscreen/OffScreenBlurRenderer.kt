@@ -2,14 +2,11 @@ package com.hoko.ktblur.opengl.offscreen
 
 import android.graphics.Bitmap
 import android.opengl.GLES20
-import com.hoko.ktblur.api.FrameBuffer
-import com.hoko.ktblur.api.Program
-import com.hoko.ktblur.api.Render
-import com.hoko.ktblur.api.Texture
 import com.hoko.ktblur.opengl.cache.FrameBufferCache
-import com.hoko.ktblur.opengl.program.ProgramFactory
-import com.hoko.ktblur.opengl.texture.TextureFactory
-import com.hoko.ktblur.params.Mode
+import com.hoko.ktblur.opengl.FrameBuffer
+import com.hoko.ktblur.opengl.Program
+import com.hoko.ktblur.opengl.Texture
+import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.util.getFragmentShaderCode
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -115,7 +112,7 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
         }
         if (needRelink || !this::mProgram.isInitialized) {
             deletePrograms()
-            mProgram = ProgramFactory.create(vertexShaderCode, getFragmentShaderCode(mode))
+            mProgram = Program.of(vertexShaderCode, getFragmentShaderCode(mode))
             needRelink = false
         }
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -199,8 +196,8 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
     }
 
     private class BlurContext(val bitmap: Bitmap) {
-        val inputTexture: Texture = TextureFactory.create(bitmap)
-        val horizontalTexture: Texture = TextureFactory.create(bitmap.width, bitmap.height)
+        val inputTexture: Texture = Texture.create(bitmap)
+        val horizontalTexture: Texture = Texture.create(bitmap.width, bitmap.height)
         val blurFrameBuffer: FrameBuffer = FrameBufferCache.getFrameBuffer()
 
         init {

@@ -1,22 +1,20 @@
-package com.hoko.ktblur.opengl.program
+package com.hoko.ktblur.opengl
 
 import android.opengl.GLES20
 import android.util.Log
-import com.hoko.ktblur.api.Program
 import com.hoko.ktblur.util.checkGLError
 
-internal class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Program {
+internal class Program private constructor(vertexShaderCode: String, fragmentShaderCode: String) {
     companion object {
-        private val TAG = SimpleProgram::class.java.simpleName
+        private val TAG = Program::class.java.simpleName
+        fun of(vertexShaderCode: String, fragmentShaderCode: String): Program {
+            return Program(vertexShaderCode, fragmentShaderCode)
+        }
     }
 
-    override var id: Int = 0
+    var id: Int = 0
 
     init {
-        create(vertexShaderCode, fragmentShaderCode)
-    }
-
-    override fun create(vertexShaderCode: String, fragmentShaderCode: String) {
         var vertexShader = 0
         var fragmentShader = 0
         try {
@@ -43,7 +41,6 @@ internal class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: Strin
             GLES20.glDeleteShader(vertexShader)
             GLES20.glDeleteShader(fragmentShader)
         }
-
     }
 
 
@@ -64,7 +61,7 @@ internal class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: Strin
     }
 
 
-    override fun delete() {
+    fun delete() {
         if (id != 0) {
             GLES20.glUseProgram(0)
             GLES20.glDeleteProgram(id)

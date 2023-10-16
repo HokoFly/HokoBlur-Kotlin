@@ -1,16 +1,26 @@
-package com.hoko.ktblur.opengl.texture
+package com.hoko.ktblur.opengl
 
 import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.opengl.GLUtils
-import com.hoko.ktblur.api.Texture
 import java.lang.ref.WeakReference
 import java.nio.Buffer
 
-internal sealed class AbstractTexture(override val width: Int, override val height: Int) : Texture {
-    override var id: Int = 0
+internal sealed class Texture(val width: Int, val height: Int) {
+    companion object {
+        fun create(width: Int, height: Int): Texture {
+            require(width > 0 && height > 0)
+            return SimpleTexture(width, height)
+        }
 
-    override fun create() {
+        fun create(bitmap: Bitmap): Texture {
+            return BitmapTexture(bitmap)
+        }
+    }
+
+    var id: Int = 0
+
+    protected fun create() {
         val textureIds = IntArray(1)
         GLES20.glGenTextures(1, textureIds, 0)
         id = textureIds[0]
@@ -27,7 +37,7 @@ internal sealed class AbstractTexture(override val width: Int, override val heig
 
     abstract fun onTextureCreated()
 
-    override fun delete() {
+    fun delete() {
         if (id != 0) {
             GLES20.glDeleteTextures(1, intArrayOf(id), 0)
         }
@@ -35,7 +45,7 @@ internal sealed class AbstractTexture(override val width: Int, override val heig
 }
 
 
-internal class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.height){
+internal class BitmapTexture(bitmap: Bitmap) : Texture(bitmap.width, bitmap.height){
 
     private val bitmapWeakRef = WeakReference<Bitmap>(bitmap)
 
@@ -53,7 +63,7 @@ internal class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bit
     }
 }
 
-internal class SimpleTexture(width: Int, height: Int) : AbstractTexture(width, height) {
+internal class SimpleTexture(width: Int, height: Int) : Texture(width, height) {
 
     init {
         create()

@@ -1,6 +1,6 @@
 package com.hoko.ktblur.filter
 
-import com.hoko.ktblur.params.Direction
+import com.hoko.ktblur.api.Direction
 import com.hoko.ktblur.util.clamp
 import kotlin.math.exp
 

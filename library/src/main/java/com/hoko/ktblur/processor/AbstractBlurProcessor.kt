@@ -7,8 +7,8 @@ import com.hoko.ktblur.api.BlurResultDispatcher
 import com.hoko.ktblur.ext.getBitmap
 import com.hoko.ktblur.ext.scale
 import com.hoko.ktblur.ext.translate
-import com.hoko.ktblur.params.Mode
-import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.api.Mode
+import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.AsyncBlurTask
 import com.hoko.ktblur.task.BitmapAsyncBlurTask
 import com.hoko.ktblur.task.BlurTaskManager

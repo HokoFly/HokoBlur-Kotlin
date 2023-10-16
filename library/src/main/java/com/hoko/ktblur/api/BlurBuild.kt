@@ -3,8 +3,6 @@ package com.hoko.ktblur.api
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
-import com.hoko.ktblur.params.Mode
-import com.hoko.ktblur.params.Scheme
 import com.hoko.ktblur.task.AsyncBlurTask
 import kotlinx.coroutines.Job
 

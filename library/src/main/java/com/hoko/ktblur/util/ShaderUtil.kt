@@ -1,6 +1,6 @@
 package com.hoko.ktblur.util
 
-import com.hoko.ktblur.params.Mode
+import com.hoko.ktblur.api.Mode
 
 
 /**

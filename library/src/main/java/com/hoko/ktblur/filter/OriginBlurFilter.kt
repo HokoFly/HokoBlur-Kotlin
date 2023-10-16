@@ -3,9 +3,8 @@ package com.hoko.ktblur.filter
 import android.graphics.Bitmap
 import android.util.Log
 import com.hoko.ktblur.ext.replaceWithPixels
-import com.hoko.ktblur.params.Direction
-import com.hoko.ktblur.params.Mode
-import java.lang.IllegalStateException
+import com.hoko.ktblur.api.Direction
+import com.hoko.ktblur.api.Mode
 
 internal object OriginBlurFilter {
     private const val TAG = "OriginBlurFilter"

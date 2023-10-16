@@ -2,8 +2,8 @@ package com.hoko.ktblur.filter
 
 import android.graphics.Bitmap
 import android.util.Log
-import com.hoko.ktblur.params.Direction
-import com.hoko.ktblur.params.Mode
+import com.hoko.ktblur.api.Direction
+import com.hoko.ktblur.api.Mode
 
 object NativeBlurFilter {
     private const val TAG = "OriginBlurFilter"

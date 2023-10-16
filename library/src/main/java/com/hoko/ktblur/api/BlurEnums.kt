@@ -1,4 +1,4 @@
-package com.hoko.ktblur.params
+package com.hoko.ktblur.api
 
 enum class Direction {
     HORIZONTAL,

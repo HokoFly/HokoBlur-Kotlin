@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.hoko.ktblur.HokoBlur
 import com.hoko.ktblur.api.BlurProcessor
-import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.api.Scheme
 import kotlin.math.max
 
 

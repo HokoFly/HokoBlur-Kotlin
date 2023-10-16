@@ -6,8 +6,8 @@ import android.view.View
 import com.hoko.ktblur.api.BlurBuild
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.BlurResultDispatcher
-import com.hoko.ktblur.params.Mode
-import com.hoko.ktblur.params.Scheme
+import com.hoko.ktblur.api.Mode
+import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.AndroidBlurResultDispatcher
 import com.hoko.ktblur.task.AsyncBlurTask
 import kotlinx.coroutines.Job

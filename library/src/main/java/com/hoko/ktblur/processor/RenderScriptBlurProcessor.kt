@@ -6,7 +6,7 @@ import androidx.renderscript.Allocation
 import androidx.renderscript.Element
 import androidx.renderscript.RenderScript
 import androidx.renderscript.ScriptIntrinsicBlur
-import com.hoko.ktblur.params.Mode
+import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.renderscript.ScriptC_BoxBlur
 import com.hoko.ktblur.renderscript.ScriptC_StackBlur
 import com.hoko.ktblur.util.clamp

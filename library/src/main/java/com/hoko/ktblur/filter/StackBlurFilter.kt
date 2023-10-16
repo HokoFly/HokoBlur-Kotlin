@@ -1,6 +1,6 @@
 package com.hoko.ktblur.filter
 
-import com.hoko.ktblur.params.Direction
+import com.hoko.ktblur.api.Direction
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min

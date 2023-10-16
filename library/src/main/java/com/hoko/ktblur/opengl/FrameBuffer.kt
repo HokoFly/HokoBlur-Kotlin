@@ -1,23 +1,23 @@
-package com.hoko.ktblur.opengl.framebuffer
+package com.hoko.ktblur.opengl
 
 import android.opengl.GLES20
-import com.hoko.ktblur.api.FrameBuffer
-import com.hoko.ktblur.api.Texture
 
-internal class SimpleFrameBuffer(private var frameBufferId: Int = 0) : FrameBuffer{
+internal class FrameBuffer(private var frameBufferId: Int = 0) {
+    companion object {
+        fun create(id: Int = 0): FrameBuffer {
+            return FrameBuffer(id)
+        }
+    }
+
     private lateinit var texture: Texture
 
     init {
-        create()
-    }
-
-    override fun create() {
         val frameBufferIds = IntArray(1)
         GLES20.glGenFramebuffers(1, frameBufferIds, 0)
         frameBufferId = frameBufferIds[0]
     }
 
-    override fun bindTexture(texture: Texture) {
+    fun bindTexture(texture: Texture) {
         this.texture = texture.also {
             check(it.id != 0)
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferId)
@@ -29,13 +29,13 @@ internal class SimpleFrameBuffer(private var frameBufferId: Int = 0) : FrameBuff
         }
     }
 
-    override fun bindSelf() {
+    fun bindSelf() {
         if (frameBufferId != 0) {
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferId)
         }
     }
 
-    override fun delete() {
+    fun delete() {
         if (frameBufferId != 0) {
             GLES20.glDeleteFramebuffers(1, intArrayOf(frameBufferId), 0)
         }
