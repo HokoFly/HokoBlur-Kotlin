@@ -18,7 +18,7 @@ import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
-class OffScreenBlurRenderer : Render<Bitmap> {
+internal class OffScreenBlurRenderer : Render<Bitmap> {
 
     companion object {
         private val TAG = OffScreenBlurRenderer::class.java.simpleName

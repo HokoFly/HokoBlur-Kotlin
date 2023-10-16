@@ -11,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10.GL_UNSIGNED_BYTE
 
 
 
-class EglBuffer {
+internal class EglBuffer {
     companion object {
         private val TAG = EglBuffer::class.java.simpleName
         private const val EGL_CONTEXT_CLIENT_VERSION: Int = 0x3098

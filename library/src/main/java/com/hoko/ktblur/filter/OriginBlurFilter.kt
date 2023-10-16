@@ -7,7 +7,7 @@ import com.hoko.ktblur.params.Direction
 import com.hoko.ktblur.params.Mode
 import java.lang.IllegalStateException
 
-object OriginBlurFilter {
+internal object OriginBlurFilter {
     private const val TAG = "OriginBlurFilter"
     private var nativeLoaded = false
 

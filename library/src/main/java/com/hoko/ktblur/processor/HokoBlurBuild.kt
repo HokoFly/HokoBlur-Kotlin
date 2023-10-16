@@ -23,54 +23,45 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var translateY: Int = 0
     internal var dispatcher: BlurResultDispatcher = AndroidBlurResultDispatcher.MAIN_THREAD_DISPATCHER
 
-    override fun context(context: Context): BlurBuild {
+    override fun context(context: Context): BlurBuild = apply {
         this.context = context
-        return this
     }
 
-    override fun mode(mode: Mode): BlurBuild {
+    override fun mode(mode: Mode): BlurBuild = apply {
         this.mode = mode
-        return this
     }
 
-    override fun scheme(scheme: Scheme): BlurBuild {
+    override fun scheme(scheme: Scheme): BlurBuild = apply {
         this.scheme = scheme
-        return this
     }
 
-    override fun radius(radius: Int): BlurBuild {
+    override fun radius(radius: Int): BlurBuild = apply {
         this.radius = radius
-        return this
     }
 
-    override fun sampleFactor(sampleFactor: Float): BlurBuild {
+    override fun sampleFactor(sampleFactor: Float): BlurBuild = apply {
         this.sampleFactor = sampleFactor
-        return this
     }
 
-    override fun forceCopy(forceCopy: Boolean): BlurBuild {
+    override fun forceCopy(forceCopy: Boolean): BlurBuild = apply {
         this.forceCopy = forceCopy
-        return this
     }
 
-    override fun needUpscale(needUpscale: Boolean): BlurBuild {
+    override fun needUpscale(needUpscale: Boolean): BlurBuild = apply {
         this.needUpscale = needUpscale
-        return this
     }
 
-    override fun translateX(translateX: Int): BlurBuild {
+    override fun translateX(translateX: Int): BlurBuild = apply {
         this.translateX = translateX
-        return this
     }
 
-    override fun translateY(translateY: Int): BlurBuild {
+    override fun translateY(translateY: Int): BlurBuild = apply {
         this.translateY = translateY
         return this
     }
 
-    override fun dispatcher(dispatcher: BlurResultDispatcher): BlurBuild {
+    override fun dispatcher(dispatcher: BlurResultDispatcher): BlurBuild = apply {
         this.dispatcher = dispatcher
-        return this
     }
 
     override fun processor(): BlurProcessor {

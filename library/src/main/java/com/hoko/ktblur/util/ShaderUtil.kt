@@ -7,7 +7,7 @@ import com.hoko.ktblur.params.Mode
  * Created by yuxfzju on 16/9/4.
  */
 
-val vertexCode: String = """
+internal val vertexCode: String = """
         uniform mat4 uMVPMatrix;
         uniform mat4 uTexMatrix;
         attribute vec2 aTexCoord;
@@ -84,7 +84,7 @@ private val stackSampleCode: String = """
 /**
  * copy the texture
  */
-val copyFragmentCode: String = """
+internal val copyFragmentCode: String = """
         precision mediump float;
         varying vec2 vTexCoord;
         uniform sampler2D uTexture;
@@ -96,7 +96,7 @@ val copyFragmentCode: String = """
         }
     """.trimIndent()
 
-fun getFragmentShaderCode(mode: Mode): String {
+internal fun getFragmentShaderCode(mode: Mode): String {
 
     val sb = StringBuilder(
         """

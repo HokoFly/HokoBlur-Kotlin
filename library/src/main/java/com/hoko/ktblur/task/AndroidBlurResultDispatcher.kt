@@ -9,7 +9,7 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class AndroidBlurResultDispatcher (handler: Handler) : BlurResultDispatcher {
+internal class AndroidBlurResultDispatcher (handler: Handler) : BlurResultDispatcher {
     companion object {
         internal val MAIN_THREAD_DISPATCHER : BlurResultDispatcher by lazy { AndroidBlurResultDispatcher(SingleMainHandler.get()) }
     }

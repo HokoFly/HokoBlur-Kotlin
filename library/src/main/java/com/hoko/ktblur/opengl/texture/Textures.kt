@@ -7,7 +7,7 @@ import com.hoko.ktblur.api.Texture
 import java.lang.ref.WeakReference
 import java.nio.Buffer
 
-sealed class AbstractTexture(override val width: Int, override val height: Int) : Texture {
+internal sealed class AbstractTexture(override val width: Int, override val height: Int) : Texture {
     override var id: Int = 0
 
     override fun create() {
@@ -35,7 +35,7 @@ sealed class AbstractTexture(override val width: Int, override val height: Int) 
 }
 
 
-class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.height){
+internal class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.height){
 
     private val bitmapWeakRef = WeakReference<Bitmap>(bitmap)
 
@@ -53,7 +53,7 @@ class BitmapTexture(bitmap: Bitmap) : AbstractTexture(bitmap.width, bitmap.heigh
     }
 }
 
-class SimpleTexture(width: Int, height: Int) : AbstractTexture(width, height) {
+internal class SimpleTexture(width: Int, height: Int) : AbstractTexture(width, height) {
 
     init {
         create()

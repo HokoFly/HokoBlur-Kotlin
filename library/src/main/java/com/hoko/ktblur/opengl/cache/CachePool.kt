@@ -1,7 +1,7 @@
 package com.hoko.ktblur.opengl.cache
 
 
-abstract class CachePool<in K, V>(private val maxSize: Int) {
+internal abstract class CachePool<in K, V>(private val maxSize: Int) {
 
     private val internalCache by lazy { mutableListOf<V>() }
 

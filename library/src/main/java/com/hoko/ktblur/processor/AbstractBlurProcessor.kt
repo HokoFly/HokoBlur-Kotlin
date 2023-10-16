@@ -15,7 +15,7 @@ import com.hoko.ktblur.task.BlurTaskManager
 import com.hoko.ktblur.task.ViewAsyncBlurTask
 import kotlinx.coroutines.Job
 
-abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
+internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
     override var radius: Int = builder.radius
     override var mode: Mode = builder.mode

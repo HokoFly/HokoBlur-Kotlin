@@ -5,7 +5,7 @@ import android.util.Log
 import com.hoko.ktblur.api.Program
 import com.hoko.ktblur.util.checkGLError
 
-class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Program {
+internal class SimpleProgram(vertexShaderCode: String, fragmentShaderCode: String) : Program {
     companion object {
         private val TAG = SimpleProgram::class.java.simpleName
     }

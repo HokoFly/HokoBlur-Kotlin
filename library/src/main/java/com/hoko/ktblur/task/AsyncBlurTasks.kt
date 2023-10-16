@@ -50,7 +50,7 @@ sealed class AsyncBlurTask<in T>(
     }
 }
 
-class BitmapAsyncBlurTask(
+internal class BitmapAsyncBlurTask(
     blurProcessor: BlurProcessor,
     block: Callback.() -> Unit,
     bitmap: Bitmap,
@@ -61,7 +61,7 @@ class BitmapAsyncBlurTask(
     }
 }
 
-class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
+internal class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
                          block: Callback.() -> Unit,
                          view: View,
                          dispatcher: BlurResultDispatcher

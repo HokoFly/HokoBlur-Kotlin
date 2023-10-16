@@ -1,6 +1,6 @@
 package com.hoko.ktblur.api
 
-interface Texture {
+internal interface Texture {
     val width: Int
 
     val height: Int

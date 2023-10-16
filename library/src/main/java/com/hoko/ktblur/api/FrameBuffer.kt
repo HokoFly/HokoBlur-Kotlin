@@ -1,6 +1,6 @@
 package com.hoko.ktblur.api
 
-interface FrameBuffer {
+internal interface FrameBuffer {
     fun create()
 
     fun bindTexture(texture: Texture)

@@ -8,7 +8,7 @@ import com.hoko.ktblur.params.Mode
 import com.hoko.ktblur.params.Scheme
 import java.util.concurrent.Callable
 
-class BlurSubTask(
+internal class BlurSubTask(
     private val scheme: Scheme,
     private val mode: Mode,
     private val bitmapOut: Bitmap,

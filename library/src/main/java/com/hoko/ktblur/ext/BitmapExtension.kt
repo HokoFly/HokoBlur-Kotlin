@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 
-fun Bitmap.scale(factor: Float): Bitmap {
+internal fun Bitmap.scale(factor: Float): Bitmap {
     if (factor == 1.0f) {
         return this
     }
@@ -20,7 +20,7 @@ fun Bitmap.scale(factor: Float): Bitmap {
     return scaledBitmap
 }
 
-fun Bitmap.translate(translateX: Int, translateY: Int): Bitmap {
+internal fun Bitmap.translate(translateX: Int, translateY: Int): Bitmap {
     if (translateX == 0 && translateY == 0) {
         return this
     }

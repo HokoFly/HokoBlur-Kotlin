@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 
-fun View.getBitmap(translateX: Int, translateY: Int, sampleFactor: Float): Bitmap {
+internal fun View.getBitmap(translateX: Int, translateY: Int, sampleFactor: Float): Bitmap {
     val scale = 1.0f / sampleFactor
     val downScaledWidth = ((this.width - translateX) * scale).toInt()
     val downScaledHeight = ((this.height - translateY) * scale).toInt()

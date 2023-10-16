@@ -1,5 +1,5 @@
 package com.hoko.ktblur.api
 
-interface Render<T> {
+internal interface Render<T> {
     fun onDrawFrame(t: T)
 }

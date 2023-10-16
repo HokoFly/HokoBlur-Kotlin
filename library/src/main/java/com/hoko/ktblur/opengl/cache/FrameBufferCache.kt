@@ -3,15 +3,13 @@ package com.hoko.ktblur.opengl.cache
 import com.hoko.ktblur.api.FrameBuffer
 import com.hoko.ktblur.opengl.framebuffer.FrameBufferFactory
 
-object FrameBufferCache {
-    val sDisplayFrameBuffer: FrameBuffer by lazy { FrameBufferFactory.getDisplayFrameBuffer() }
-
-    private val cachePool = object : CachePool<Any, FrameBuffer>(32) {
-        override fun create(key: Any): FrameBuffer {
+internal object FrameBufferCache {
+    private val cachePool = object : CachePool<Unit, FrameBuffer>(32) {
+        override fun create(key: Unit): FrameBuffer {
             return FrameBufferFactory.create()
         }
 
-        override fun checkHit(key: Any, value: FrameBuffer): Boolean {
+        override fun checkHit(key: Unit, value: FrameBuffer): Boolean {
             return true
         }
 
@@ -21,7 +19,7 @@ object FrameBufferCache {
     }
 
     fun getFrameBuffer(): FrameBuffer {
-        return cachePool.get(Any())
+        return cachePool.get(Unit)
     }
 
 

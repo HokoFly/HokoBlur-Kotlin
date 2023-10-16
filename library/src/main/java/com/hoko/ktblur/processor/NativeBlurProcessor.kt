@@ -8,7 +8,7 @@ import com.hoko.ktblur.task.BlurSubTask
 import com.hoko.ktblur.task.BlurTaskManager
 import kotlinx.coroutines.*
 
-class NativeBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
+internal class NativeBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
 
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         if (parallel) {

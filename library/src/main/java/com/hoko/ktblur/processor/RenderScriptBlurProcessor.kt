@@ -11,7 +11,7 @@ import com.hoko.ktblur.renderscript.ScriptC_BoxBlur
 import com.hoko.ktblur.renderscript.ScriptC_StackBlur
 import com.hoko.ktblur.util.clamp
 
-class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
+internal class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
     companion object {
         private val TAG = RenderScriptBlurProcessor::class.java.simpleName
         private const val RS_MAX_RADIUS = 25

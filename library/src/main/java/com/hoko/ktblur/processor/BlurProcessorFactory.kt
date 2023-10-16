@@ -3,7 +3,7 @@ package com.hoko.ktblur.processor
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.params.Scheme
 
-class BlurProcessorFactory {
+internal class BlurProcessorFactory {
     companion object {
         fun getBlurProcessor(scheme: Scheme, builder: HokoBlurBuild): BlurProcessor {
             return when(scheme) {
