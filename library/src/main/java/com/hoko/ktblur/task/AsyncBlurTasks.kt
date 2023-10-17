@@ -4,70 +4,62 @@ import android.graphics.Bitmap
 import android.view.View
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.BlurResultDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-sealed class AsyncBlurTask<in T>(
-    protected val blurProcessor: BlurProcessor,
-    private val block: Callback.() -> Unit,
+abstract class AsyncBlurTask<in T>(
+    private val block: BlurCallback.() -> Unit,
     private val target: T,
     private val dispatcher: BlurResultDispatcher
 ) {
-    fun suspendAction(): suspend () -> Unit = {
-        val callback = BlurCallbackDSL().apply {
-            this.block()
-        }
-        val blurResult = BlurResult(callback)
 
-        kotlin.runCatching {
-            blurResult.apply {
-                bitmap = makeBlur(target)
-                success = true
+    fun post(): Job {
+        return CoroutineScope(BlurTaskManager.BLUR_DISPATCHER).launch {
+            val callback = BlurCallback().apply {
+                this.block()
             }
-        }.onFailure { e ->
-            blurResult.apply {
-                error = e
-                success = false
+            val success = false
+            var exception: Throwable? = null
+            val bitmap: Bitmap? = null
+            kotlin.runCatching {
+                applyBlur(target)
+            }.getOrElse {
+                exception = it
             }
-        }.also {
             dispatcher.dispatch {
-                blurResult.run {
-                    if (success) {
-                        callback.onSuccess?.invoke(bitmap)
-                    } else {
-                        callback.onFailed?.invoke(error)
-                    }
+                if (success) {
+                    callback.onSuccess?.invoke(bitmap)
+                } else {
+                    callback.onFailed?.invoke(exception)
                 }
             }
         }
+
     }
 
-    abstract fun makeBlur(target: T) : Bitmap
+    abstract suspend fun applyBlur(target: T) : Bitmap
 
-    interface Callback {
-        var onSuccess: ((Bitmap?) -> Unit)?
-        var onFailed: ((Throwable?) -> Unit)?
-        fun onSuccess(onSuccess: ((Bitmap?) -> Unit)?)
-        fun onFailed(onFailed: ((Throwable?) -> Unit)?)
-    }
 }
 
 internal class BitmapAsyncBlurTask(
-    blurProcessor: BlurProcessor,
-    block: Callback.() -> Unit,
+    private val blurProcessor: BlurProcessor,
+    block: BlurCallback.() -> Unit,
     bitmap: Bitmap,
     dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<Bitmap>(blurProcessor, block, bitmap, dispatcher) {
-    override fun makeBlur(target: Bitmap): Bitmap {
+) : AsyncBlurTask<Bitmap>(block, bitmap, dispatcher) {
+    override suspend fun applyBlur(target: Bitmap): Bitmap {
         return blurProcessor.blur(target)
     }
 }
 
-internal class ViewAsyncBlurTask (blurProcessor: BlurProcessor,
-                         block: Callback.() -> Unit,
-                         view: View,
-                         dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<View>(blurProcessor, block, view, dispatcher) {
+internal class ViewAsyncBlurTask (private val blurProcessor: BlurProcessor,
+                                  block: BlurCallback.() -> Unit,
+                                  view: View,
+                                  dispatcher: BlurResultDispatcher
+) : AsyncBlurTask<View>(block, view, dispatcher) {
 
-    override fun makeBlur(target: View): Bitmap {
+    override suspend fun applyBlur(target: View): Bitmap {
         return blurProcessor.blur(target)
     }
 }

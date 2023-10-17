@@ -9,7 +9,6 @@ import androidx.renderscript.ScriptIntrinsicBlur
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.renderscript.ScriptC_BoxBlur
 import com.hoko.ktblur.renderscript.ScriptC_StackBlur
-import com.hoko.ktblur.util.clamp
 
 internal class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcessor(builder) {
     companion object {
@@ -71,7 +70,7 @@ internal class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurP
 
     private fun doGaussianBlur(input: Allocation, output: Allocation) {
         // RenderScript won't work, if too large blur radius
-        radius = radius.clamp(0, RS_MAX_RADIUS)
+        radius = radius.coerceIn(0, RS_MAX_RADIUS)
         gaussianBlurScript.apply {
             setRadius(radius.toFloat())
             setInput(input)

@@ -9,7 +9,7 @@ import com.hoko.ktblur.api.BlurResultDispatcher
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.AndroidBlurResultDispatcher
-import com.hoko.ktblur.task.AsyncBlurTask
+import com.hoko.ktblur.task.BlurCallback
 import kotlinx.coroutines.Job
 
 class HokoBlurBuild(var context: Context) : BlurBuild {
@@ -76,11 +76,11 @@ class HokoBlurBuild(var context: Context) : BlurBuild {
         return processor().blur(view)
     }
 
-    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit): Job {
+    override fun asyncBlur(bitmap: Bitmap, block: BlurCallback.() -> Unit): Job {
         return processor().asyncBlur(bitmap, block)
     }
 
-    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit): Job {
+    override fun asyncBlur(view: View, block: BlurCallback.() -> Unit): Job {
         return processor().asyncBlur(view, block)
     }
 }

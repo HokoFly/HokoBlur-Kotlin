@@ -20,10 +20,6 @@ internal class BlurSubTask(
     override fun run() {
         check(!bitmapOut.isRecycled)
         require(cores > 0)
-        applyPixelsBlur()
-    }
-
-    private fun applyPixelsBlur() {
         when (scheme) {
             Scheme.NATIVE -> NativeBlurFilter.doBlur(mode, bitmapOut, radius, cores, index, direction)
             Scheme.KOTLIN -> OriginBlurFilter.doBlur(mode, bitmapOut, radius, cores, index, direction)

@@ -2,7 +2,7 @@ package com.hoko.ktblur.api
 
 import android.graphics.Bitmap
 import android.view.View
-import com.hoko.ktblur.task.AsyncBlurTask
+import com.hoko.ktblur.task.BlurCallback
 import kotlinx.coroutines.Job
 
 interface BlurProcessor {
@@ -20,8 +20,8 @@ interface BlurProcessor {
 
     fun blur(view: View): Bitmap
 
-    fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit): Job
+    fun asyncBlur(bitmap: Bitmap, block: BlurCallback.() -> Unit): Job
 
-    fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit): Job
+    fun asyncBlur(view: View, block: BlurCallback.() -> Unit): Job
 
 }

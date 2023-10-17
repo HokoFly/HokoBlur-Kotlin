@@ -1,7 +1,6 @@
 package com.hoko.ktblur.filter
 
 import com.hoko.ktblur.api.Direction
-import com.hoko.ktblur.util.clamp
 
 internal object BoxBlurFilter {
 
@@ -39,7 +38,7 @@ internal object BoxBlurFilter {
             var tb = 0 // ARGB
 
             for (i in -radius..radius) {
-                val rgb = input[inIndex + i.clamp(0, width - 1)]
+                val rgb = input[inIndex + i.coerceIn(0, width - 1)]
                 ta += rgb shr 24 and 0xff
                 tr += rgb shr 16 and 0xff
                 tg += rgb shr 8 and 0xff
@@ -84,7 +83,7 @@ internal object BoxBlurFilter {
             var tb = 0 // ARGB
 
             for (i in -radius..radius) {
-                val rgb = input[x + i.clamp(0, height - 1) * width]
+                val rgb = input[x + i.coerceIn(0, height - 1) * width]
                 ta += rgb shr 24 and 0xff
                 tr += rgb shr 16 and 0xff
                 tg += rgb shr 8 and 0xff

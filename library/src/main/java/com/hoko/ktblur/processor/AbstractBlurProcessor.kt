@@ -9,9 +9,8 @@ import com.hoko.ktblur.ext.scale
 import com.hoko.ktblur.ext.translate
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.api.Scheme
-import com.hoko.ktblur.task.AsyncBlurTask
 import com.hoko.ktblur.task.BitmapAsyncBlurTask
-import com.hoko.ktblur.task.BlurTaskManager
+import com.hoko.ktblur.task.BlurCallback
 import com.hoko.ktblur.task.ViewAsyncBlurTask
 import kotlinx.coroutines.Job
 
@@ -49,12 +48,12 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
 
-    override fun asyncBlur(bitmap: Bitmap, block: AsyncBlurTask.Callback.() -> Unit): Job {
-        return BlurTaskManager.submit(BitmapAsyncBlurTask(this, block, bitmap, dispatcher).suspendAction())
+    override fun asyncBlur(bitmap: Bitmap, block: BlurCallback.() -> Unit): Job {
+        return BitmapAsyncBlurTask(this, block, bitmap, dispatcher).post()
     }
 
-    override fun asyncBlur(view: View, block: AsyncBlurTask.Callback.() -> Unit): Job {
-        return BlurTaskManager.submit(ViewAsyncBlurTask(this, block, view, dispatcher).suspendAction())
+    override fun asyncBlur(view: View, block: BlurCallback.() -> Unit): Job {
+        return ViewAsyncBlurTask(this, block, view, dispatcher).post()
     }
 
     private fun checkParams() {
