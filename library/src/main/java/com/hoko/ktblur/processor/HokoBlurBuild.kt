@@ -9,10 +9,10 @@ import com.hoko.ktblur.api.BlurResultDispatcher
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.AndroidBlurResultDispatcher
-import com.hoko.ktblur.task.BlurCallback
+import com.hoko.ktblur.api.BlurCallback
 import kotlinx.coroutines.Job
 
-class HokoBlurBuild(var context: Context) : BlurBuild {
+internal class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var radius: Int = 10
     internal var mode: Mode = Mode.STACK
     internal var scheme: Scheme = Scheme.NATIVE

@@ -27,4 +27,8 @@ internal fun Bitmap.translate(translateX: Int, translateY: Int): Bitmap {
     return Bitmap.createBitmap(this, translateX, translateY, this.width - translateX, this.height - translateY)
 }
 
-external fun Bitmap.replaceWithPixels(pixels: IntArray, x: Int, y: Int, deltaX: Int, deltaY: Int)
+internal fun Bitmap.replaceWithPixels(pixels: IntArray, x: Int, y: Int, deltaX: Int, deltaY: Int) {
+    this.nativeReplaceWithPixels(pixels, x, y, deltaX, deltaY)
+}
+
+private external fun Bitmap.nativeReplaceWithPixels(pixels: IntArray, x: Int, y: Int, deltaX: Int, deltaY: Int)

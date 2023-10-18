@@ -10,7 +10,7 @@ import com.hoko.ktblur.ext.translate
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.BitmapAsyncBlurTask
-import com.hoko.ktblur.task.BlurCallback
+import com.hoko.ktblur.api.BlurCallback
 import com.hoko.ktblur.task.ViewAsyncBlurTask
 import kotlinx.coroutines.Job
 

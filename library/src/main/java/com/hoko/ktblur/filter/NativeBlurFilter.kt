@@ -5,7 +5,7 @@ import android.util.Log
 import com.hoko.ktblur.api.Direction
 import com.hoko.ktblur.api.Mode
 
-object NativeBlurFilter {
+internal object NativeBlurFilter {
     private const val TAG = "OriginBlurFilter"
     private var nativeLoaded = false
     fun doBlur(mode: Mode, bitmap: Bitmap, radius: Int, cores: Int, index: Int, direction: Direction) {

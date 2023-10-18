@@ -2,13 +2,14 @@ package com.hoko.ktblur.task
 
 import android.graphics.Bitmap
 import android.view.View
+import com.hoko.ktblur.api.BlurCallback
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.BlurResultDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-abstract class AsyncBlurTask<in T>(
+internal abstract class AsyncBlurTask<in T>(
     private val block: BlurCallback.() -> Unit,
     private val target: T,
     private val dispatcher: BlurResultDispatcher

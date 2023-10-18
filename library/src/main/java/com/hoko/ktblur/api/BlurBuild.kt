@@ -3,7 +3,6 @@ package com.hoko.ktblur.api
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
-import com.hoko.ktblur.task.BlurCallback
 import kotlinx.coroutines.Job
 
 interface BlurBuild {

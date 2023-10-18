@@ -19,7 +19,7 @@ jint clamp(jint i, jint minValue, jint maxValue) {
 
 
 JNIEXPORT void JNICALL
-Java_com_hoko_ktblur_ext_BitmapExtensionKt_replaceWithPixels(JNIEnv *env, jclass clazz, jobject jbitmap,
+Java_com_hoko_ktblur_ext_BitmapExtensionKt_nativeReplaceWithPixels(JNIEnv *env, jclass clazz, jobject jbitmap,
                                                  jintArray j_inArray, jint j_x, jint j_y,
                                                  jint j_deltaW, jint j_deltaH) {
 
