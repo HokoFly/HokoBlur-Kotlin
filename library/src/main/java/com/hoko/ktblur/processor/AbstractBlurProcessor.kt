@@ -18,7 +18,7 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
 
     override var radius: Int = builder.radius
     override var mode: Mode = builder.mode
-    override var scheme: Scheme = builder.scheme
+    override val scheme: Scheme = builder.scheme
     override var sampleFactor: Float = builder.sampleFactor
     override var forceCopy: Boolean = builder.forceCopy
     override var needUpscale: Boolean = builder.needUpscale

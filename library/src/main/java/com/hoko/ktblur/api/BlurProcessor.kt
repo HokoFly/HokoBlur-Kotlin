@@ -7,7 +7,7 @@ import kotlinx.coroutines.Job
 interface BlurProcessor {
     var radius: Int
     var mode: Mode
-    var scheme: Scheme
+    val scheme: Scheme
     var sampleFactor: Float
     var forceCopy: Boolean
     var needUpscale: Boolean
