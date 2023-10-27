@@ -1,65 +1,68 @@
 package com.hoko.ktblur.demo
 
 import android.animation.ValueAnimator
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.Spinner
+import android.widget.SpinnerAdapter
+import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.annotation.ArrayRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.hoko.ktblur.HokoBlur
 import com.hoko.ktblur.api.BlurBuild
 import com.hoko.ktblur.api.BlurProcessor
 import com.hoko.ktblur.api.Mode
 import com.hoko.ktblur.api.Scheme
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
+import com.hoko.ktblur.demo.vm.MultiBlurViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     companion object {
         private const val SAMPLE_FACTOR = 8.0f
-        private const val INIT_RADIUS = 5
         private val TEST_IMAGE_RES = intArrayOf(R.drawable.sample1, R.drawable.sample2)
     }
 
     private var mCurrentImageRes = TEST_IMAGE_RES[0]
-    private var index = 0
     private lateinit var mSeekBar: SeekBar
     private lateinit var mRadiusText: TextView
     private lateinit var mImageView: ImageView
-
-    private lateinit var mBlurBuilder: BlurBuild
-    private var mProcessor: BlurProcessor? = null
-    private lateinit var mInBitmap: Bitmap
-    private var mRadius = INIT_RADIUS
-    private val mAnimator: ValueAnimator by lazy {
-        ValueAnimator.ofInt(0, (mRadius / 25f * 1000).toInt()).apply {
+    private val mBlurBuilder: BlurBuild by lazy {
+        HokoBlur.with(this).sampleFactor(SAMPLE_FACTOR)
+    }
+    private val viewModel: MultiBlurViewModel by viewModels()
+    private lateinit var mProcessor: BlurProcessor
+    private val mSwitchAnimator: ValueAnimator by lazy {
+        ValueAnimator.ofFloat(0f, viewModel.blurRadius / 25f).apply {
             interpolator = LinearInterpolator()
             addUpdateListener { animation ->
-                mSeekBar.progress = animation.animatedValue as Int
-                updateImage((animation.animatedValue as Int / 1000f * 25f).toInt())
+                mSeekBar.progress = (animation.animatedValue as Float * 100).toInt()
+                updateImage((animation.animatedValue as Float * 25f).toInt())
             }
             duration = 300
         }
     }
-    private val mRoundAnimator: ValueAnimator by lazy {
-        ValueAnimator.ofInt(0, 1000, 0).apply {
+    private val mRangeAnimator: ValueAnimator by lazy {
+        ValueAnimator.ofFloat(0.2f, 1.0f, 0.2f).apply {
             interpolator = LinearInterpolator()
             addUpdateListener { animation ->
-                mSeekBar.progress = animation.animatedValue as Int
-                val radius = (animation.animatedValue as Int / 1000f * 25).toInt()
+                mSeekBar.progress = (animation.animatedValue as Float * 100).toInt()
+                val radius = (animation.animatedValue as Float * 25).toInt()
                 updateImage(radius)
             }
             duration = 2000
         }
     }
-    @Volatile
-    private var mFuture: Future<*>? = null
-    private val mDispatcher = Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +88,27 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         findViewById<Button>(R.id.anim_btn).apply {
             setOnClickListener(this@MultiBlurActivity)
         }
-
+        viewModel.bitmapLiveData.observe(this) {
+            mImageView.setImageBitmap(it)
+            endAnimators()
+            mSwitchAnimator.start()
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.blurFlow.collect { op ->
+                mProcessor.radius = op.radius
+                val bitmap = viewModel.bitmapLiveData.value
+                val blurResult = withContext(Dispatchers.IO) {
+                    if (bitmap?.isRecycled?.not() == true) {
+                        mProcessor.blur(bitmap)
+                    } else {
+                        null
+                    }
+                }
+                mImageView.setImageBitmap(blurResult)
+            }
+        }
+        mProcessor = mBlurBuilder.scheme(Scheme.RENDERSCRIPT).mode(Mode.GAUSSIAN).processor()
         setImage(mCurrentImageRes)
-        mBlurBuilder = HokoBlur.with(this).sampleFactor(SAMPLE_FACTOR)
 
     }
 
@@ -102,14 +123,7 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
 
     private fun setImage(@DrawableRes id: Int) {
-        mImageView.setImageResource(id)
-        mDispatcher.submit {
-            mInBitmap = BitmapFactory.decodeResource(resources, id)
-            runOnUiThread {
-                endAnimators()
-                mAnimator.start()
-            }
-        }
+        viewModel.setImage(id, resources)
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -131,8 +145,8 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
         }
         endAnimators()
-        mProcessor = mBlurBuilder.processor().apply { radius = mRadius }
-        updateImage(mRadius)
+        mProcessor = mBlurBuilder.processor().apply { radius = viewModel.blurRadius }
+        updateImage(viewModel.blurRadius)
 
     }
 
@@ -149,10 +163,10 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
             }
             R.id.anim_btn -> {
                 endAnimators()
-                mRoundAnimator.start()
+                mRangeAnimator.start()
             }
             R.id.photo -> {
-                mCurrentImageRes = TEST_IMAGE_RES[++index % TEST_IMAGE_RES.size]
+                mCurrentImageRes = TEST_IMAGE_RES[++viewModel.resIndex % TEST_IMAGE_RES.size]
                 setImage(mCurrentImageRes)
             }
         }
@@ -161,7 +175,7 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     }
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        val radius = (progress / 1000f * 25).toInt()
+        val radius = (progress / 100f * 25).toInt()
         mRadiusText.text = "Blur Radius: $radius"
         updateImage(radius)
     }
@@ -175,57 +189,19 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     }
 
     private fun updateImage(radius: Int) {
-        mRadius = radius
-        cancelPreTask()
-        mFuture = mDispatcher.submit(BlurTask(mInBitmap, mProcessor, radius) { bitmap ->
-            if (!isFinishing) {
-                runOnUiThread { mImageView.setImageBitmap(bitmap) }
-            }
-        })
-    }
-
-    private fun cancelPreTask() {
-        mFuture?.let {
-            if (!it.isCancelled && !it.isDone) {
-                it.cancel(false)
-            }
-        }
+        viewModel.changeBlurRadius(radius)
     }
 
     private fun endAnimators() {
-        mAnimator.let {
+        mSwitchAnimator.let {
             if (it.isStarted) {
                 it.end()
             }
         }
-        mRoundAnimator.let {
+        mRangeAnimator.let {
             if (it.isStarted) {
                 it.end()
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cancelPreTask()
-    }
-
-    private class BlurTask internal constructor(
-        private val bitmap: Bitmap,
-        private val blurProcessor: BlurProcessor?,
-        private val radius: Int,
-        private val onBlurSuccess: (bitmap: Bitmap) -> Unit
-    ) : Runnable {
-
-        override fun run() {
-            blurProcessor?.let {
-                if (!bitmap.isRecycled) {
-                    it.radius = radius
-                    onBlurSuccess.invoke(it.blur(bitmap))
-                }
-            }
-        }
-
-    }
-
 }

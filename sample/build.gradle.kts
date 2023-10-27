@@ -38,5 +38,7 @@ dependencies {
     implementation(fileTree("dir" to "libs", "include" to "*.jar"))
     implementation(Deps.kotlinCoroutine)
     implementation(Deps.appcompat)
+    implementation(Deps.lifecycleKtx)
+    implementation(Deps.activityKtx)
     implementation(project(":library"))
 }
