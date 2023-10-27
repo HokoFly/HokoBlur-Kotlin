@@ -3,14 +3,13 @@ plugins {
     kotlin("android")
 }
 
-var isReleaseBuildType = false
-gradle.startParameter.taskNames.forEach {
-    val taskNameL = it.lowercase()
-    if (taskNameL.contains("release")) {
-        isReleaseBuildType = true
+var isReleaseBuild = false
+gradle.startParameter.taskNames.forEach { taskName ->
+    if (taskName.contains("release", true)) {
+        isReleaseBuild = true
     }
-    if (taskNameL.equals("uploadArchives", true)) {
-        isReleaseBuildType = true
+    if (taskName.equals("uploadArchives", true)) {
+        isReleaseBuild = true
     }
 }
 
@@ -28,8 +27,6 @@ android {
                 cppFlags("-std=c++11 -frtti -fexceptions")
             }
         }
-        val abiFilters = if (isReleaseBuildType) arrayOf("armeabi-v7a", "arm64-v8a") else arrayOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-        externalNativeBuild.cmake.abiFilters(*abiFilters)
         consumerProguardFiles("proguard-rules.pro")
     }
     compileOptions {
@@ -43,12 +40,32 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            externalNativeBuild {
+                cmake {
+                    abiFilters("armeabi-v7a", "arm64-v8a")
+                }
+            }
         }
 
         getByName("debug") {
             isJniDebuggable = true
+            externalNativeBuild {
+                cmake {
+                    abiFilters("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+                }
+            }
         }
     }
+
+    packaging {
+        jniLibs {
+            if (isReleaseBuild) {
+                excludes.add("lib/x86_64/*.so")
+                excludes.add("lib/x86/*.so")
+            }
+        }
+    }
+
     externalNativeBuild {
         cmake {
             path("src/main/cpp/CMakeLists.txt")
