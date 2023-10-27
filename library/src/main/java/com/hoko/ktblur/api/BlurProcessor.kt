@@ -10,7 +10,6 @@ interface BlurProcessor {
     val scheme: Scheme
     var sampleFactor: Float
     var forceCopy: Boolean
-    var needUpscale: Boolean
     var translateX: Int
     var translateY: Int
     var dispatcher: BlurResultDispatcher

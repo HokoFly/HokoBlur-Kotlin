@@ -36,7 +36,6 @@ class EasyBlurActivity : AppCompatActivity() {
             .translateY(150)
             .forceCopy(false)
             .sampleFactor(5.0f)
-            .needUpscale(true)
             .asyncBlur(bitmap) {
                 onSuccess {
                     imageView2.setImageBitmap(it)

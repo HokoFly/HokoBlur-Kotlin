@@ -13,6 +13,7 @@ import com.hoko.ktblur.task.BitmapAsyncBlurTask
 import com.hoko.ktblur.api.BlurCallback
 import com.hoko.ktblur.task.ViewAsyncBlurTask
 import kotlinx.coroutines.Job
+import java.lang.Float.max
 
 internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProcessor {
 
@@ -21,7 +22,6 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
     override val scheme: Scheme = builder.scheme
     override var sampleFactor: Float = builder.sampleFactor
     override var forceCopy: Boolean = builder.forceCopy
-    override var needUpscale: Boolean = builder.needUpscale
     override var translateX: Int = builder.translateX
     override var translateY: Int = builder.translateY
     override var dispatcher: BlurResultDispatcher = builder.dispatcher
@@ -31,8 +31,11 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
     }
 
     override fun blur(view: View): Bitmap {
+        if (radius <= 0) {
+            return view.getBitmap(translateX, translateY, 1.0f)
+        }
         return realBlur(view.getBitmap(translateX, translateY, sampleFactor), true)
-            .scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
+            .scale(1.0f / sampleFactor)
     }
 
     private fun blur(bitmap: Bitmap, parallel: Boolean): Bitmap {
@@ -42,8 +45,11 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
         } else {
             bitmap
         }
+        if (radius <= 0) {
+            return inBitmap
+        }
         val scaledBitmap = inBitmap.translate(translateX, translateY).scale(sampleFactor)
-        return realBlur(scaledBitmap, parallel).scale(if (needUpscale) (1.0f / sampleFactor) else 1.0f)
+        return realBlur(scaledBitmap, parallel).scale(1.0f / sampleFactor)
     }
 
     protected abstract fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap
@@ -57,8 +63,7 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
     }
 
     private fun checkParams() {
-        radius = if (radius <= 0) 1 else radius
-        sampleFactor = if (sampleFactor < 1.0f) 1.0f else sampleFactor
+        sampleFactor = max(sampleFactor, 1.0f)
     }
 
 

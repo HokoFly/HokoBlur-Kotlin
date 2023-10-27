@@ -19,8 +19,6 @@ interface BlurBuild {
 
     fun forceCopy(forceCopy: Boolean): BlurBuild
 
-    fun needUpscale(needUpscale: Boolean): BlurBuild
-
     fun translateX(translateX: Int): BlurBuild
 
     fun translateY(translateY: Int): BlurBuild

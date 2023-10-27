@@ -11,6 +11,7 @@ import com.hoko.ktblur.api.Scheme
 import com.hoko.ktblur.task.AndroidBlurResultDispatcher
 import com.hoko.ktblur.api.BlurCallback
 import kotlinx.coroutines.Job
+import java.lang.Float.max
 
 internal class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var radius: Int = 10
@@ -18,7 +19,6 @@ internal class HokoBlurBuild(var context: Context) : BlurBuild {
     internal var scheme: Scheme = Scheme.NATIVE
     internal var sampleFactor: Float = 5.0f
     internal var forceCopy: Boolean = false
-    internal var needUpscale: Boolean = true
     internal var translateX: Int = 0
     internal var translateY: Int = 0
     internal var dispatcher: BlurResultDispatcher = AndroidBlurResultDispatcher.MAIN_THREAD_DISPATCHER
@@ -40,15 +40,11 @@ internal class HokoBlurBuild(var context: Context) : BlurBuild {
     }
 
     override fun sampleFactor(sampleFactor: Float): BlurBuild = apply {
-        this.sampleFactor = sampleFactor
+        this.sampleFactor = max(sampleFactor, 1.0f)
     }
 
     override fun forceCopy(forceCopy: Boolean): BlurBuild = apply {
         this.forceCopy = forceCopy
-    }
-
-    override fun needUpscale(needUpscale: Boolean): BlurBuild = apply {
-        this.needUpscale = needUpscale
     }
 
     override fun translateX(translateX: Int): BlurBuild = apply {
