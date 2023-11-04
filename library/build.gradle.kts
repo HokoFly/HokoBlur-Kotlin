@@ -3,15 +3,7 @@ plugins {
     kotlin("android")
 }
 
-var isReleaseBuild = false
-gradle.startParameter.taskNames.forEach { taskName ->
-    if (taskName.contains("release", true)) {
-        isReleaseBuild = true
-    }
-    if (taskName.equals("uploadArchives", true)) {
-        isReleaseBuild = true
-    }
-}
+apply(from = "../stripe.build.kts")
 
 android {
     compileSdk = CompileConfig.compileSdkVersion
@@ -57,21 +49,13 @@ android {
         }
     }
 
-    packaging {
-        jniLibs {
-            if (isReleaseBuild) {
-                excludes.add("lib/x86_64/*.so")
-                excludes.add("lib/x86/*.so")
-            }
-        }
-    }
-
     externalNativeBuild {
         cmake {
             path("src/main/cpp/CMakeLists.txt")
         }
     }
     namespace = "com.hoko.ktblur"
+    ndkVersion = CompileConfig.ndkVersion
 
 }
 

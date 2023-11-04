@@ -15,6 +15,7 @@ object CompileConfig {
     const val renderscriptSupportModeEnabled = true
     val javaVersion = JavaVersion.VERSION_17
     const val jvmTarget = "17"
+    const val ndkVersion = "26.1.10909125"
 }
 
 internal object Versions {

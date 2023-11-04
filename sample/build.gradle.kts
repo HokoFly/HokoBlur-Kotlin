@@ -3,6 +3,8 @@ plugins {
     kotlin("android")
 }
 
+apply(from = "../stripe.build.kts")
+
 android {
     compileSdk = CompileConfig.compileSdkVersion
     defaultConfig {
@@ -25,6 +27,7 @@ android {
     buildTypes {
         getByName("release") {
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         getByName("debug") {
