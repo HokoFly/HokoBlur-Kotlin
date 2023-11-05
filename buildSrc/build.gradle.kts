@@ -7,7 +7,16 @@ repositories {
     google()
 }
 
+object BuildVersions {
+    const val kotlinVersion = "1.8.21"
+    const val AGPVersion = "8.1.2"
+}
+object ClassPathDeps {
+    const val androidGradlePlugin = "com.android.tools.build:gradle:${BuildVersions.AGPVersion}"
+    const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${BuildVersions.kotlinVersion}"
+}
+
 dependencies {
-    implementation("com.android.tools.build:gradle:8.1.2")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21")
+    implementation(ClassPathDeps.androidGradlePlugin)
+    implementation(ClassPathDeps.kotlinGradlePlugin)
 }
