@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
 }
 
-apply(from = "../stripe.build.kts")
+configureStripeAbi()
 
 android {
     compileSdk = CompileConfig.compileSdkVersion
