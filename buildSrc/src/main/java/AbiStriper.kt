@@ -25,5 +25,5 @@ fun Project.configureStripeAbi() {
     }
 }
 
-internal fun Project.`android`(configure: Action<CommonExtension<*, *, *, *, *>>): Unit =
+internal fun Project.`android`(configure: Action<CommonExtension<*, *, *, *, *, *>>): Unit =
     (this as ExtensionAware).extensions.configure("android", configure)

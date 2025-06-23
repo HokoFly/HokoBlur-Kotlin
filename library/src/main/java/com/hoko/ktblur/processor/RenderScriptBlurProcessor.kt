@@ -16,17 +16,19 @@ internal class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurP
         private const val RS_MAX_RADIUS = 25
     }
 
-    private var renderScript: RenderScript = RenderScript.create(builder.context)
-    private var gaussianBlurScript: ScriptIntrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript))
-    private var boxBlurScript: ScriptC_BoxBlur = ScriptC_BoxBlur(renderScript)
-    private var stackBlurScript: ScriptC_StackBlur = ScriptC_StackBlur(renderScript)
+    private val renderScript: RenderScript by lazy { RenderScript.create(builder.context) }
+    private val gaussianBlurScript: ScriptIntrinsicBlur by lazy { ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript)) }
+    private val boxBlurScript: ScriptC_BoxBlur by lazy { ScriptC_BoxBlur(renderScript) }
+    private val stackBlurScript: ScriptC_StackBlur by lazy { ScriptC_StackBlur(renderScript) }
 
 
     override fun realBlur(bitmap: Bitmap, parallel: Boolean): Bitmap {
 
-        val allocationIn = Allocation.createFromBitmap(renderScript, bitmap)
-        val allocationOut = Allocation.createFromBitmap(renderScript, Bitmap.createBitmap(bitmap))
-        kotlin.runCatching {
+        var allocationIn: Allocation? = null
+        var allocationOut: Allocation? = null
+       try {
+            allocationIn = Allocation.createFromBitmap(renderScript, bitmap)
+            allocationOut = Allocation.createFromBitmap(renderScript, Bitmap.createBitmap(bitmap))
             when (mode) {
                 Mode.BOX -> {
                     doBoxBlur(bitmap, allocationIn, allocationOut)
@@ -41,11 +43,11 @@ internal class RenderScriptBlurProcessor(builder: HokoBlurBuild) : AbstractBlurP
                     allocationOut.copyTo(bitmap)
                 }
             }
-        }.onFailure { t ->
+        } catch (t: Throwable) {
             Log.e(TAG, "Blur the bitmap error", t)
-        }.also {
-            allocationIn.destroy()
-            allocationOut.destroy()
+        } finally {
+           allocationIn?.destroy()
+           allocationOut?.destroy()
         }
         return bitmap
 

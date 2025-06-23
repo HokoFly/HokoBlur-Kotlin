@@ -9,7 +9,7 @@ repositories {
 
 object BuildVersions {
     const val kotlinVersion = "1.8.21"
-    const val AGPVersion = "8.1.2"
+    const val AGPVersion = "8.10.1"
 }
 object ClassPathDeps {
     const val androidGradlePlugin = "com.android.tools.build:gradle:${BuildVersions.AGPVersion}"

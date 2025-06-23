@@ -41,7 +41,7 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
     private fun blur(bitmap: Bitmap, parallel: Boolean): Bitmap {
         checkParams()
         val inBitmap = if (forceCopy) {
-            bitmap.copy(bitmap.config, true)
+            bitmap.copy(bitmap.config ?: Bitmap.Config.ARGB_8888, true)
         } else {
             bitmap
         }

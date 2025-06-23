@@ -6,14 +6,14 @@ import org.gradle.api.JavaVersion
 
 object CompileConfig {
     const val minSdkVersion = 21
-    const val compileSdkVersion = 34
-    const val targetSdkVersion = 34
-    const val buildToolsVersion = "34.0.0"
-    const val renderscriptTargetApi = 34
+    const val compileSdkVersion = 36
+    const val targetSdkVersion = 36
+    const val buildToolsVersion = "36.0.0"
+    const val renderscriptTargetApi = 36
     const val renderscriptSupportModeEnabled = true
     val javaVersion = JavaVersion.VERSION_17
     const val jvmTarget = "17"
-    const val ndkVersion = "26.1.10909125"
+    const val ndkVersion = "28.1.13356709"
 }
 
 internal object Versions {

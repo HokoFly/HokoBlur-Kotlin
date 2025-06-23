@@ -12,7 +12,7 @@ internal fun Bitmap.scale(factor: Float): Bitmap {
     val scale = 1.0f / factor
     val newWidth: Int = (width * scale).toInt()
     val newHeight: Int = (height * scale).toInt()
-    val scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, config)
+    val scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, config ?: Bitmap.Config.ARGB_8888)
     val canvas = Canvas(scaledBitmap)
     val scaleMatrix = Matrix()
     scaleMatrix.setScale(scale, scale)
