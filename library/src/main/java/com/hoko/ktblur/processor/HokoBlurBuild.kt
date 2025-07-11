@@ -65,18 +65,38 @@ internal class HokoBlurBuild(var context: Context) : BlurBuild {
     }
 
     override fun blur(bitmap: Bitmap): Bitmap {
-        return processor().blur(bitmap)
+        val processor = processor()
+        try {
+            return processor.blur(bitmap)
+        } finally {
+            processor.close()
+        }
     }
 
     override fun blur(view: View): Bitmap {
-        return processor().blur(view)
+        val processor = processor()
+        try {
+            return processor().blur(view)
+        } finally {
+            processor.close()
+        }
     }
 
     override fun asyncBlur(bitmap: Bitmap, block: BlurCallback.() -> Unit): Job {
-        return processor().asyncBlur(bitmap, block)
+        val processor = processor()
+        return processor.asyncBlur(bitmap, block).apply {
+            invokeOnCompletion {
+                processor.close()
+            }
+        }
     }
 
     override fun asyncBlur(view: View, block: BlurCallback.() -> Unit): Job {
-        return processor().asyncBlur(view, block)
+        val processor = processor()
+        return processor.asyncBlur(view, block).apply {
+            invokeOnCompletion {
+                processor.close()
+            }
+        }
     }
 }

@@ -66,5 +66,9 @@ internal abstract class AbstractBlurProcessor(builder: HokoBlurBuild) : BlurProc
         sampleFactor = max(sampleFactor, 1.0f)
     }
 
+    override fun close() {
+
+    }
+
 
 }

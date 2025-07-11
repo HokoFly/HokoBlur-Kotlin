@@ -110,6 +110,11 @@ class DragBlurringView : View {
         return super.onTouchEvent(event)
     }
 
+    override fun onDetachedFromWindow() {
+        processor.close()
+        super.onDetachedFromWindow()
+    }
+
 
 
 }

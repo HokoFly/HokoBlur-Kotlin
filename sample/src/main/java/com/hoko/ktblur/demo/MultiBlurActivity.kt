@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
 class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     companion object {
-        private const val SAMPLE_FACTOR = 8.0f
+        private const val SAMPLE_FACTOR = 1.0f
         private val TEST_IMAGE_RES = intArrayOf(R.drawable.sample1, R.drawable.sample2)
     }
 
@@ -102,7 +102,9 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
                 val blurResult = withContext(Dispatchers.IO) {
                     var result: Bitmap? = null
                     if (bitmap?.isRecycled?.not() == true) {
+                        val start = System.currentTimeMillis()
                         result = mProcessor.blur(bitmap)
+                        Log.d("yuxiaofei", "cost time=" + (System.currentTimeMillis() - start))
                     } else {
                         null
                     }
@@ -149,6 +151,7 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
 
         }
         endAnimators()
+        mProcessor.close()
         mProcessor = mBlurBuilder.processor().apply { radius = viewModel.blurRadius }
         updateImage(viewModel.blurRadius)
 
@@ -207,5 +210,10 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
                 it.end()
             }
         }
+    }
+
+    override fun onDestroy() {
+        mProcessor.close()
+        super.onDestroy()
     }
 }

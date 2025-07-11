@@ -33,4 +33,7 @@ internal class OpenGLBlurProcessor(builder: HokoBlurBuild) : AbstractBlurProcess
         return ViewAsyncBlurTask(this, block, view, dispatcher, BlurTaskManager.TASK_QUEUE_DISPATCHER).post()
     }
 
+    override fun close() {
+        eglBuffer.close()
+    }
 }

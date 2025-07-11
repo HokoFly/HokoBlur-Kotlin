@@ -22,4 +22,6 @@ interface BlurProcessor {
 
     fun asyncBlur(view: View, block: BlurCallback.() -> Unit): Job
 
+    fun close()
+
 }

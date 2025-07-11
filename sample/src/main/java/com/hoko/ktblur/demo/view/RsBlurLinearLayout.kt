@@ -61,6 +61,7 @@ class RsBlurLinearLayout : LinearLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        mProcessor.close()
         viewTreeObserver.removeOnPreDrawListener(mOnPreDrawListener)
     }
 
