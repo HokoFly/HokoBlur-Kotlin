@@ -8,27 +8,30 @@ import com.hoko.ktblur.api.BlurResultDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 internal abstract class AsyncBlurTask<in T>(
     private val block: BlurCallback.() -> Unit,
     private val target: T,
-    private val dispatcher: BlurResultDispatcher
+    private val resultDispatcher: BlurResultDispatcher,
+    private val taskDispatcher: CoroutineContext
 ) {
 
     fun post(): Job {
-        return CoroutineScope(BlurTaskManager.BLUR_DISPATCHER).launch {
+        return CoroutineScope(taskDispatcher).launch {
             val callback = BlurCallback().apply {
                 this.block()
             }
-            val success = false
+            var success = false
             var exception: Throwable? = null
-            val bitmap: Bitmap? = null
+            var bitmap: Bitmap? = null
             kotlin.runCatching {
-                applyBlur(target)
-            }.getOrElse {
+                bitmap = applyBlur(target)
+                success = true
+            }.onFailure {
                 exception = it
             }
-            dispatcher.dispatch {
+            resultDispatcher.dispatch {
                 if (success) {
                     callback.onSuccess?.invoke(bitmap)
                 } else {
@@ -47,8 +50,9 @@ internal class BitmapAsyncBlurTask(
     private val blurProcessor: BlurProcessor,
     block: BlurCallback.() -> Unit,
     bitmap: Bitmap,
-    dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<Bitmap>(block, bitmap, dispatcher) {
+    resultDispatcher: BlurResultDispatcher,
+    taskDispatcher: CoroutineContext = BlurTaskManager.BLUR_DISPATCHER
+) : AsyncBlurTask<Bitmap>(block, bitmap, resultDispatcher, taskDispatcher) {
     override suspend fun applyBlur(target: Bitmap): Bitmap {
         return blurProcessor.blur(target)
     }
@@ -57,8 +61,9 @@ internal class BitmapAsyncBlurTask(
 internal class ViewAsyncBlurTask (private val blurProcessor: BlurProcessor,
                                   block: BlurCallback.() -> Unit,
                                   view: View,
-                                  dispatcher: BlurResultDispatcher
-) : AsyncBlurTask<View>(block, view, dispatcher) {
+                                  resultDispatcher: BlurResultDispatcher,
+                                  taskDispatcher: CoroutineContext = BlurTaskManager.BLUR_DISPATCHER,
+) : AsyncBlurTask<View>(block, view, resultDispatcher, taskDispatcher) {
 
     override suspend fun applyBlur(target: View): Bitmap {
         return blurProcessor.blur(target)

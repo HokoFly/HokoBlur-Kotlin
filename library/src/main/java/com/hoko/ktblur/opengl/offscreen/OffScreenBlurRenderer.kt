@@ -7,7 +7,8 @@ import com.hoko.ktblur.opengl.FrameBuffer
 import com.hoko.ktblur.opengl.Program
 import com.hoko.ktblur.opengl.Texture
 import com.hoko.ktblur.api.Mode
-import com.hoko.ktblur.util.getFragmentShaderCode
+import com.hoko.ktblur.opengl.cache.ProgramManager
+import com.hoko.ktblur.opengl.cache.TextureCache
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -15,24 +16,13 @@ import java.nio.ShortBuffer
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
-internal class OffScreenBlurRenderer : Render<Bitmap> {
+internal class OffScreenBlurRenderer(private val mode: Mode, private val radius: Int) : Render<Bitmap> {
 
     companion object {
         private val TAG = OffScreenBlurRenderer::class.java.simpleName
         private const val COORDS_PER_VERTEX = 3
         private const val VERTEX_STRIDE = COORDS_PER_VERTEX * 4
     }
-
-    private val vertexShaderCode = """
-            attribute vec2 aTexCoord;
-            attribute vec4 aPosition;
-            varying vec2 vTexCoord;
-            void main() {
-                gl_Position = aPosition;
-                vTexCoord = aTexCoord;
-            }
-    """.trimIndent()
-
 
     private val squareCoords = floatArrayOf(
         -1f, 1f, 0.0f, // top left
@@ -56,20 +46,6 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
     private val drawListBuffer: ShortBuffer
     private val texCoordBuffer: FloatBuffer
 
-    internal var radius: Int = 0
-    internal var mode: Mode = Mode.STACK
-        set(mode) {
-            if (field != mode) {
-                needRelink = true
-                deletePrograms()
-            }
-            field = mode
-        }
-
-    @Volatile
-    private var needRelink: Boolean = true
-
-
     init {
         vertexBuffer = ByteBuffer.allocateDirect(squareCoords.size * 4).apply { order(ByteOrder.nativeOrder()) }.let {
             it.asFloatBuffer().apply {
@@ -89,6 +65,8 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
                 position(0)
             }
         }
+
+        mProgram = ProgramManager.getProgram(mode)
     }
 
     override fun onDrawFrame(t: Bitmap) {
@@ -110,11 +88,7 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
         check(context !== EGL10.EGL_NO_CONTEXT) {
             "This thread has no EGLContext."
         }
-        if (needRelink || !this::mProgram.isInitialized) {
-            deletePrograms()
-            mProgram = Program.of(vertexShaderCode, getFragmentShaderCode(mode))
-            needRelink = false
-        }
+        check(this::mProgram.isInitialized && mProgram.id != 0)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glViewport(0, 0, bitmap.width, bitmap.height)
         return BlurContext(bitmap)
@@ -124,6 +98,7 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
     private fun draw(blurContext: BlurContext) {
         drawOneDimenBlur(blurContext, true)
         drawOneDimenBlur(blurContext, false)
+        GLES20.glFinish();
     }
 
     private fun drawOneDimenBlur(blurContext: BlurContext, isHorizontal: Boolean) {
@@ -184,29 +159,32 @@ internal class OffScreenBlurRenderer : Render<Bitmap> {
         vertexBuffer.clear()
         texCoordBuffer.clear()
         drawListBuffer.clear()
-        deletePrograms()
+        releasePrograms()
     }
 
 
-    private fun deletePrograms() {
-        needRelink = true
+    private fun releasePrograms() {
         if (this::mProgram.isInitialized) {
-            mProgram.delete()
+            ProgramManager.releaseProgram(mProgram);
         }
     }
 
     private class BlurContext(val bitmap: Bitmap) {
-        val inputTexture: Texture = Texture.create(bitmap)
-        val horizontalTexture: Texture = Texture.create(bitmap.width, bitmap.height)
+        val inputTexture: Texture
+        val horizontalTexture: Texture
         val blurFrameBuffer: FrameBuffer = FrameBufferCache.getFrameBuffer()
 
         init {
+            inputTexture = TextureCache.acquireTexture(bitmap.getWidth(), bitmap.getHeight())
+            inputTexture.uploadBitmap(bitmap)
+            horizontalTexture = TextureCache.acquireTexture(bitmap.width, bitmap.height)
             blurFrameBuffer.bindTexture(horizontalTexture)
         }
 
         fun finish() {
-            this.inputTexture.delete()
-            this.horizontalTexture.delete()
+            blurFrameBuffer.unbindTexture()
+            TextureCache.releaseTexture(inputTexture)
+            TextureCache.releaseTexture(horizontalTexture)
             FrameBufferCache.recycleFrameBuffer(blurFrameBuffer)
         }
     }

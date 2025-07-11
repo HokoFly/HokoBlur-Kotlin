@@ -14,3 +14,35 @@ internal fun checkGLError(msg: String): Boolean {
     }
     return error == 0
 }
+
+internal fun checkGlState(stage: String?) {
+    val error = GLES20.glGetError()
+    if (error != GLES20.GL_NO_ERROR) {
+        Log.e(TAG, "OpenGL error at " + stage + ": " + getGLErrorString(error))
+    }
+}
+
+internal fun getGLErrorString(error: Int): String {
+    when (error) {
+        GLES20.GL_INVALID_ENUM -> return "GL_INVALID_ENUM"
+        GLES20.GL_INVALID_VALUE -> return "GL_INVALID_VALUE"
+        GLES20.GL_INVALID_OPERATION -> return "GL_INVALID_OPERATION"
+        GLES20.GL_OUT_OF_MEMORY -> return "GL_OUT_OF_MEMORY"
+        else -> return "Unknown error: $error"
+    }
+}
+
+internal fun checkFramebufferStatus() {
+    val status = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER)
+    if (status != GLES20.GL_FRAMEBUFFER_COMPLETE) {
+        val statusStr: String?
+        when (status) {
+            GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT -> statusStr = "Incomplete attachment"
+            GLES20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS -> statusStr = "Incomplete dimensions"
+            GLES20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT -> statusStr = "Missing attachment"
+            GLES20.GL_FRAMEBUFFER_UNSUPPORTED -> statusStr = "Unsupported"
+            else -> statusStr = "Unknown: $status"
+        }
+        throw IllegalStateException("Framebuffer not complete: $statusStr")
+    }
+}

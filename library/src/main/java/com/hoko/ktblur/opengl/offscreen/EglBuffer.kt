@@ -4,14 +4,18 @@ import android.graphics.Bitmap
 import android.opengl.GLES20
 import android.util.Log
 import com.hoko.ktblur.api.Mode
+import java.io.Closeable
 import java.nio.IntBuffer
-import javax.microedition.khronos.egl.*
+import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.egl.EGLContext
+import javax.microedition.khronos.egl.EGLDisplay
+import javax.microedition.khronos.egl.EGLSurface
 import javax.microedition.khronos.opengles.GL10.GL_RGBA
 import javax.microedition.khronos.opengles.GL10.GL_UNSIGNED_BYTE
 
 
-
-internal class EglBuffer {
+internal class EglBuffer : Closeable {
     companion object {
         private val TAG = EglBuffer::class.java.simpleName
         private const val EGL_CONTEXT_CLIENT_VERSION: Int = 0x3098
@@ -28,21 +32,20 @@ internal class EglBuffer {
             EGL10.EGL_NONE
         )
         private val CONTEXT_ATTRIB_LIST: IntArray = intArrayOf(EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE)
-
-
     }
+
+    var eglDisplay = EGL10.EGL_NO_DISPLAY
+    var eglContext: EGLContext? = null
+    val eglConfigs = arrayOfNulls<EGLConfig>(1)
+
 
     fun getBlurBitmap(bitmap: Bitmap, radius: Int, mode: Mode): Bitmap {
         val w = bitmap.width
         val h = bitmap.height
-        var eglDisplay = EGL10.EGL_NO_DISPLAY
+        checkEGLContext()
         var eglSurface: EGLSurface? = null
-        var eglContext: EGLContext? = null
-        val eglConfigs = arrayOfNulls<EGLConfig>(1)
         kotlin.runCatching {
-            eglDisplay = createDisplay(eglConfigs)
             eglSurface = createSurface(w, h, eglDisplay, eglConfigs)
-            eglContext = createEGLContext(eglDisplay, eglConfigs)
             EGL.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
             val renderer = createRenderer(radius, mode)
             renderer.onDrawFrame(bitmap)
@@ -52,9 +55,15 @@ internal class EglBuffer {
             Log.e(TAG, "Blur the bitmap error", t)
         }.also {
             destroyEglSurface(eglDisplay, eglSurface)
-            destroyEglContext(eglDisplay, eglContext)
         }
         return bitmap
+    }
+
+    private fun checkEGLContext() {
+        if (eglDisplay === EGL10.EGL_NO_DISPLAY) {
+            eglDisplay = createDisplay(eglConfigs)
+            eglContext = createEGLContext(eglDisplay, eglConfigs)
+        }
     }
 
     private fun convertToBitmap(bitmap: Bitmap) {
@@ -114,9 +123,10 @@ internal class EglBuffer {
     }
 
     private fun createRenderer(radius: Int, mode: Mode): OffScreenBlurRenderer {
-        val renderer = OffScreenBlurRenderer()
-        renderer.radius = radius
-        renderer.mode = mode
-        return renderer
+        return OffScreenBlurRenderer(mode, radius)
+    }
+
+    override fun close() {
+        destroyEglContext(eglDisplay, eglContext)
     }
 }

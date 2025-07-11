@@ -50,9 +50,10 @@ class EasyBlurActivity : AppCompatActivity() {
                 .scheme(Scheme.NATIVE)
                 .translateX(100)
                 .translateY(100)
-                .asyncBlur(imageView1) {
+                .sampleFactor(5.0f)
+                .asyncBlur(imageView) {
                     onSuccess {
-                        imageView3.setImageBitmap(it)
+                        imageView2.setImageBitmap(it)
                     }
                     onFailed {
                         it?.printStackTrace()

@@ -7,15 +7,13 @@ import com.hoko.ktblur.api.Mode
  * Created by yuxfzju on 16/9/4.
  */
 
-internal val vertexCode: String = """
-        uniform mat4 uMVPMatrix;
-        uniform mat4 uTexMatrix;
+internal val vertexShaderCode: String = """
         attribute vec2 aTexCoord;
-        attribute vec3 aPosition;
+        attribute vec4 aPosition;
         varying vec2 vTexCoord;
         void main() {
-            gl_Position = uMVPMatrix * vec4(aPosition, 1);
-            vTexCoord = (uTexMatrix * vec4(aTexCoord, 1, 1)).st;
+            gl_Position = aPosition;
+            vTexCoord = aTexCoord;
         }
     """.trimIndent()
 

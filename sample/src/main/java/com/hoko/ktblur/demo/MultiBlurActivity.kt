@@ -1,7 +1,9 @@
 package com.hoko.ktblur.demo
 
 import android.animation.ValueAnimator
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.AdapterView
@@ -98,11 +100,13 @@ class MultiBlurActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
                 mProcessor.radius = op.radius
                 val bitmap = viewModel.bitmapLiveData.value
                 val blurResult = withContext(Dispatchers.IO) {
+                    var result: Bitmap? = null
                     if (bitmap?.isRecycled?.not() == true) {
-                        mProcessor.blur(bitmap)
+                        result = mProcessor.blur(bitmap)
                     } else {
                         null
                     }
+                    result
                 }
                 mImageView.setImageBitmap(blurResult)
             }

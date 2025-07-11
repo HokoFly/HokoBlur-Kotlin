@@ -29,6 +29,18 @@ internal class FrameBuffer(private var frameBufferId: Int = 0) {
         }
     }
 
+    fun unbindTexture() {
+        if (this.texture.id != 0) {
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferId)
+            GLES20.glFramebufferTexture2D(
+                GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
+                GLES20.GL_TEXTURE_2D, 0, 0
+            )
+        }
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+    }
+
+
     fun bindSelf() {
         if (frameBufferId != 0) {
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferId)

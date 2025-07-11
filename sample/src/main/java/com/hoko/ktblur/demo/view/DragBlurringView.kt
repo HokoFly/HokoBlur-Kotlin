@@ -29,7 +29,7 @@ class DragBlurringView : View {
     private var toBlurBitmap: Bitmap? = null
     private var blurringCanvas: Canvas? = null
     private var processor: BlurProcessor = HokoBlur.with(context)
-        .scheme(Scheme.NATIVE)
+        .scheme(Scheme.OPENGL)
         .mode(Mode.GAUSSIAN)
         .radius(5)
         .sampleFactor(1.0f)

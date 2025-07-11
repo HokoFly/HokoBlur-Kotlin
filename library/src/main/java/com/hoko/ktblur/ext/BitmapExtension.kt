@@ -7,7 +7,11 @@ import android.graphics.Paint
 
 internal fun Bitmap.scale(factor: Float): Bitmap {
     if (factor == 1.0f) {
-        return this
+        if (!isMutable) {
+            return copy(config ?: Bitmap.Config.ARGB_8888, true)
+        } else {
+            return this
+        }
     }
     val scale = 1.0f / factor
     val newWidth: Int = (width * scale).toInt()
